@@ -1,0 +1,73 @@
+// Pseudocódigo do PRJ-01 de Lab-ICC
+
+INÍCIO
+DECLARE CLIENTES[100][4]
+DECLARE int id = 0
+DECLARE int index = 0, escolha
+
+MOSTRE
+"Menu UaiBank
+1 - Inserir usuário
+2 - Inserir vários usuários
+3 - Buscar usuário por ID
+4 - Transferência entre usuários
+5 - Remover usuário por ID"
+
+ENQUANTO 1 FAÇA
+	LEIA escolha
+	CASO escolha
+		SEJA 1 FAÇA:
+			DECLARE char[100] nome
+			DECLARE int idade
+			DECLARE float saldo
+			LEIA nome, idade
+			REPITA
+				LEIA saldo
+				SE saldo < 0 FAÇA
+					MOSTRE "Saldo inválido"
+				FIMSE
+			ENQUANTO saldo < 0
+			
+			id++
+			clientes[index][0] = id
+			clientes[index][1] = nome
+			clientes[index][2] = idade
+			clientes[index][3] = saldo
+			MOSTRE "Usuário inserido com id " + clientes[index][0]
+			index++
+			PARE
+		SEJA 2 FAÇA:
+			DECLARE int qtdeUsuarios
+			LEIA qtdeUsuario
+			PARA int i = 0 ATÉ quant_usr-1 PASSO i++ FAÇA
+				DECLARE char[100] nome
+				DECLARE int idade
+				DECLARE float saldo
+				LEIA nome, idade
+				REPITA
+					LEIA saldo
+					SE saldo < 0 FAÇA
+						MOSTRE "Saldo inválido"
+				ENQUANTO saldo < 0
+				id++
+				clientes[index][0] = id
+				clientes[index][1] = nome
+				clientes[index][2] = idade
+				clientes[index][3] = saldo
+			FIMPARA
+			MOSTRE "Usuários inseridos com id "
+			PARA int n = 0 ATÉ qtdeUsuarios-1 PASSO n++ FAÇA
+				MOSTRE clientes[index-1-n][0]
+			FIMPARA
+			PARE
+		SEJA 3 FAÇA:
+			DECLARE int idBusca
+			LEIA idBusca
+			PARA int n = 0 ATÉ index-1 PASSO n++ FAÇA
+				SE clientes[n][0] == idBusca FAÇA
+					MOSTRE "O usuário " + clientes[n][0] + " tem saldo de R$" + clientes[n][3]
+					PARE
+				FIMSE
+			FIMPARA
+			MOSTRE "Erro: Usuário " + idBusca + " não encontrado"
+			PARE
