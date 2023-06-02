@@ -34,22 +34,22 @@ int main(){
 	struct cliente clientes[100];
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
+	
 	while(1){
-		char opt_in[100];
-		char usr_in[200];
+		char in;
+		char usr_in[150];
 		fputs("Insira uma opção: ", stdout);
-		fgets(opt_in, 100, stdin);
+		in = getchar();
 
-		if(strlen(opt_in) > 2){
-			opt_in[0] = 'x';
-		}
-		switch(opt_in[0]){
+		getchar(); // Capturar enter
+		switch(in){
 			case '0':
 				// Sair e criar arquivo .txt
 				puts("Saindo do sistema e criando um arquivo .txt");
 				return 0;
 			case '1':
-				// (clientes, "Jailson", 10, 1000);
+				fgets(usr_in, 150, stdin);
+				printf("%s", usr_in);
 				printf("Usuário inserido com id - com sucesso\n");
 				break;
 			case '2':
