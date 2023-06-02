@@ -2,12 +2,13 @@
 #include <string.h>
 
 unsigned int counter = 0;
+unsigned int id = 0;
 
 /// @brief Cria um usuário com id, nome, idade e saldo
 int create_user(struct cliente lista[], char nome[100], int idade, float saldo){
     struct cliente novo_cliente;
     int teste;
-    novo_cliente.id = counter;
+    novo_cliente.id = ++id;
     strcpy(novo_cliente.nome, nome);
     novo_cliente.idade = idade;
     novo_cliente.saldo = saldo;
