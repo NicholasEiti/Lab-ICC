@@ -1,0 +1,128 @@
+INÍCIO
+	DECLARE clientes[100][4]
+	DECLARE int id = 0
+	DECLARE int index = 0, escolha
+
+	MOSTRE "Menu UaiBank"
+	MOSTRE "1 - Inserir usuário"
+	MOSTRE "2 - Inserir vários usuários"
+	MOSTRE "3 - Buscar usuário por ID"
+	MOSTRE "4 - Transferência entre usuários"
+	MOSTRE "5 - Remover usuário por ID"
+	MOSTRE "0 - Sair"
+
+
+	ENQUANTO 1 FAÇA
+		LEIA escolha
+
+		CASO escolha
+			SEJA 1 FAÇA
+				DECLARE char[100] nome
+				DECLARE int idade
+				DECLARE float saldo
+				LEIA nome, idade
+				REPITA
+					LEIA saldo
+					SE saldo < 0 ENTÃO
+						MOSTRE "Saldo inválido"
+					FIMSE
+				ENQUANTO saldo < 0
+
+				id++
+				clientes[index][0] = id
+				clientes[index][1] = nome
+				clientes[index][2] = idade
+				clientes[index][3] = saldo
+				MOSTRE "Usuário inserido com id " + clientes[index][0]
+				index++
+				PARE
+			SEJA 2 FAÇA
+				DECLARE int qtdeUsuarios
+				LEIA qtdeUsuario
+				PARA int n = 0 ATÉ qtdeUsuario-1 PASSO 1 FAÇA
+					DECLARE char[100] nome
+					DECLARE int idade
+					DECLARE float saldo
+					LEIA nome, idade
+					REPITA
+						LEIA saldo
+						SE saldo < 0 ENTÃO
+						MOSTRE "Saldo inválido"
+					ENQUANTO saldo < 0
+					id++
+					clientes[index][0] = id
+					clientes[index][1] = nome
+					clientes[index][2] = idade
+					clientes[index][3] = saldo
+				FIMPARA
+				MOSTRE "Usuários inseridos com id "
+				PARA int n = 0 ATÉ qtdeUsuarios-1 PASSO n++ FAÇA
+					MOSTRE clientes[index-1-n][0]
+				FIMPARA
+			PARE
+			SEJA 3 FAÇA
+				DECLARE int idBusca
+				LEIA idBusca
+				PARA int n = 0 ATÉ index-1 PASSO 1 FAÇA
+					SE clientes[n][0] == idBusca ENTÃO
+						MOSTRE "O usuário " + clientes[n][0] + " tem saldo de R$" + clientes[n][3]
+						PARE
+					FIMSE
+				FIMPARA
+				MOSTRE "Erro: Usuário " + idBusca + " não encontrado"
+			PARE
+			SEJA 4 FAÇA
+				DECLARE int idOrigem, idDestino, n = 0, indexOrigem = 0, indexDestino = 0
+				DECLARE float quantia
+				LEIA (idOrigem, idDestino, quantia)
+				SE (idOrigem == IdDestino) ENTÃO
+					MOSTRE "Erro: Transferência entre o mesmo usuário”
+				SENAO
+					ENQUANTO (n < index) FAÇA
+						SE (clientes[n][0] == idOrigem) ENTÃO
+							indexOrigem = n
+						FIMSE
+						SE (clientes[n][0] == IdDestino) ENTÃO
+							indexDestino = n
+						FIMSE
+						n++
+					FIMENQUANTO
+					SE (indexOrigem == 0 || indexDestino == 0) ENTÃO
+						MOSTRE "Erro: Usuário ” + idOrigem + “ e/ou “ + idDestino + “ não encontrado”
+					SENAO
+						SE (clientes[indexOrigem][3] >= quantia) ENTÃO
+							clientes[indexOrigem][3] -= quantia
+							clientes[indexDestino][3] += quantia
+							MOSTRE "Transferência de " + idOrigem + " para " + idDestino + " feita com sucesso"
+						SENAO
+							MOSTRE "Erro: Saldo do usuário " + idOrigem + " é menor que R$", quantia
+						FIMSE
+					FIMSE
+				FIMSE
+			PARE
+			SEJA 5 FAÇA
+				DECLARE int idBusca, n = 0
+				LEIA (idBusca)
+				ENQUANTO (n < index) FAÇA
+					SE (clientes[n][0] == idBusca) ENTÃO
+						indexOrigem = n
+						remove(clientes[n][0])
+						remove(clientes[n][1])
+						remove(clientes[n][2])
+						remove(clientes[n][3])
+						PARE
+					FIMSE
+					n++
+				FIMENQUANTO
+				SE (n >= index) ENTÃO
+					MOSTRE "Erro: Usuário " + idBusca + " não encontrado"
+				FIMSE
+			PARE
+			SEJA 0 FAÇA
+				criarArquivoTxt(clientes)
+				RETORNE 0
+			SENAO
+				MOSTRE "Erro: Opção inválida"
+		FIMCASO
+	FIMENQUANTO
+FIM
