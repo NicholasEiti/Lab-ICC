@@ -30,11 +30,13 @@ void print_help(){
 	puts("Remove usuário com id <id>\n");
 }
 
+int count = 0;
+
 int main(){
 	struct cliente clientes[100];
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
-	
+
 	while(1){
 		char in;
 		char usr_in[150];
@@ -49,8 +51,11 @@ int main(){
 				return 0;
 			case '1':
 				fgets(usr_in, 150, stdin);
-				printf("%s", usr_in);
+				strtok(usr_in, "\n");
+				create_user(clientes, usr_in, 19, 0);
+				printf("nome: %s, id: %d\n", clientes[count].nome, clientes[count].id);
 				printf("Usuário inserido com id - com sucesso\n");
+				count++;
 				break;
 			case '2':
 				// create_user();

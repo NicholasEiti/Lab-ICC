@@ -7,6 +7,7 @@ unsigned int counter = 0;
 int create_user(struct cliente lista[], char nome[100], int idade, float saldo){
     struct cliente novo_cliente;
     int teste;
+    novo_cliente.id = counter;
     strcpy(novo_cliente.nome, nome);
     novo_cliente.idade = idade;
     novo_cliente.saldo = saldo;
