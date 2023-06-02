@@ -5,9 +5,11 @@
 unsigned int counter = 0;
 
 /// @brief Cria um usuário com id, nome, idade e saldo
-int create_user(struct cliente lista[], uuid_t id, char nome[100], int idade, float saldo){
+int create_user(struct cliente lista[], char nome[100], int idade, float saldo){
     struct cliente novo_cliente;
-    uuid_generate_random(novo_cliente.id);
+    uuid_t teste;
+    uuid_generate_random(teste);
+    uuid_copy(novo_cliente.id, teste);
     strcpy(novo_cliente.nome, nome);
     novo_cliente.idade = idade;
     novo_cliente.saldo = saldo;
@@ -21,12 +23,12 @@ int create_user(struct cliente lista[], uuid_t id, char nome[100], int idade, fl
 /// @param id identificação do cliente
 /// @return Retorna o index do usuário em referência a lista; retorna -1 caso o usuário não seja encontrado/inválido
 int find_user(struct cliente lista[], uuid_t id){
-    for(int i = 0; i < 100; i++){
-        if(lista[i].id == id && lista[i].nome != ""){
-            return i;
-        }
-    }
-    return -1;
+    // for(int i = 0; i < 100; i++){
+    //     if(lista[i].id == id && lista[i].nome != ""){
+    //         return i;
+    //     }
+    // }
+    // return -1;
 }
 
 

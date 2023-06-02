@@ -34,10 +34,10 @@ void print_help(){
 void list_all_users(struct cliente lista[100]){
 	for(int i = 0; i < 100; i++){
 		if(!uuid_is_null(lista[i].id)){
-			printf("Usuário ID: %s\n", lista[i].id);
-			printf("Nome: %s", lista[i].nome);
-			printf("Idade: %d", lista[i].idade);
-			printf("Saldo: R$%.2f", lista[i].saldo);
+			printf("Usuário ID: %s", lista[i].id);
+			printf(" Nome: %s", lista[i].nome);
+			printf(" Idade: %d", lista[i].idade);
+			printf(" Saldo: R$%.2f\n", lista[i].saldo);
 		}
 	}
 }
@@ -61,9 +61,7 @@ int main(){
 				puts("Saindo do sistema e criando um arquivo .txt");
 				return 0;
 			case '1':
-				// O teste de entrada ocorre aqui
-				// fgets(usr_in, 200, stdin);
-				// create_user();
+				// (clientes, "Jailson", 10, 1000);
 				printf("Usuário inserido com id - com sucesso\n");
 				break;
 			case '2':

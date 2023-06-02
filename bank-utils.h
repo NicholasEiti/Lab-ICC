@@ -10,8 +10,7 @@ struct cliente
     float saldo;
 };
 
-
-int create_user(struct cliente lista[100], uuid_t id, char nome[100], int idade, float saldo);
+int create_user(struct cliente lista[100], char nome[100], int idade, float saldo);
 
 int find_user(struct cliente lista[100], uuid_t id);
 
