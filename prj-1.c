@@ -52,8 +52,13 @@ int main(){
 			case '1':
 				fgets(usr_in, 150, stdin);
 				strtok(usr_in, "\n");
-				create_user(clientes, usr_in, 19, 0);
-				printf("nome: %s, id: %d\n", clientes[count].nome, clientes[count].id);
+				char* token;
+				char* rest = usr_in;
+				while ((token = strtok_r(rest, ",", &rest))){
+					printf("%s\n", token);
+				}
+				// create_user(clientes, usr_in, 19, 0);
+				// printf("nome: %s, id: %d\n", clientes[count].nome, clientes[count].id);
 				printf("Usuário inserido com id - com sucesso\n");
 				count++;
 				break;
