@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
+#include <stdlib.h>
+#include <errno.h>
 #include "bank-utils.h"
 
 void print_menu(){
@@ -30,7 +32,59 @@ void print_help(){
 	puts("Remove usuário com id <id>\n");
 }
 
-int count = 0;
+// Adicionar função para ler as entradas dos clientes por meio de pointers
+// Se o id fosse 
+int client_input(char nome[], unsigned int *idade, float *saldo){
+	char usr_in[150];
+	fgets(usr_in, 150, stdin);
+	strtok(usr_in, "\n"); // Remove o caractere \n do input
+	errno = 0;
+
+	char* token;
+	char* rest = usr_in;
+
+	// Pega e trata cada uma dos dados do cliente
+	for(int i = 0; i < 3; i++){
+		if((token = strtok_r(rest, ",", &rest))){
+			char *endptr;
+			int temp;
+			switch (i){
+				case 0:
+					strcpy(nome, token);
+					break;
+				case 1:
+					temp = strtol(token, &endptr, 10);
+					// Verificação de validade da idade (quando o endptr não é '\0', 
+					// há caracteres que não tem valor numérico
+					if(temp < 0 || *endptr != '\0'){
+						fprintf(stderr, "Erro: idade inválida\n");
+						return 0;
+					}
+					*idade = (unsigned int)temp;
+				case 2:
+					*saldo = strtof(token, &endptr);
+					if(*saldo < 0 || *endptr != '\0'){
+						fprintf(stderr, "Erro: saldo inválida\n");
+						return 0;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		else{
+			fprintf(stderr, "Erro: Falta de dados!\n");
+			return 0;
+		}
+	}
+
+	// Verificar se ainda há informação sobrando na leitura das informações
+	if(rest[0] != '\0'){
+		fprintf(stderr, "Erro: Excesso de argumentos!\n");
+		return 0;
+	}
+	return 1;
+}
 
 int main(){
 	struct cliente clientes[100];
@@ -38,29 +92,27 @@ int main(){
 	print_menu();
 
 	while(1){
-		char in;
-		char usr_in[150];
+		char op;
 		fputs("Insira uma opção: ", stdout);
-		in = getchar();
+		op = getchar();
 
 		getchar(); // Capturar enter
-		switch(in){
+		switch(op){
 			case '0':
 				// Sair e criar arquivo .txt
 				puts("Saindo do sistema e criando um arquivo .txt");
 				return 0;
 			case '1':
-				fgets(usr_in, 150, stdin);
-				strtok(usr_in, "\n");
-				char* token;
-				char* rest = usr_in;
-				while ((token = strtok_r(rest, ",", &rest))){
-					printf("%s\n", token);
+				printf("");
+				char nome[100];
+				unsigned int idade;
+				float saldo;
+				if(client_input(nome, &idade, &saldo)){
+					printf("Usuário inserido com id - com sucesso\n");
+					printf("%s %u %.2f\n", nome, idade, saldo);
+					create_user(clientes, nome, idade, saldo);
 				}
-				// create_user(clientes, usr_in, 19, 0);
-				// printf("nome: %s, id: %d\n", clientes[count].nome, clientes[count].id);
-				printf("Usuário inserido com id - com sucesso\n");
-				count++;
+				
 				break;
 			case '2':
 				// create_user();

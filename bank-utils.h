@@ -4,11 +4,11 @@ struct cliente
 {
     int id;
     char nome[100];
-    int idade;
+    unsigned int idade;
     float saldo;
 };
 
-int create_user(struct cliente lista[100], char nome[100], int idade, float saldo);
+int create_user(struct cliente lista[100], char nome[100], unsigned int idade, float saldo);
 
 int find_user(struct cliente lista[100], int id);
 

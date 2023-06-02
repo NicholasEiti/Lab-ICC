@@ -5,7 +5,7 @@ unsigned int counter = 0;
 unsigned int id = 0;
 
 /// @brief Cria um usuário com id, nome, idade e saldo
-int create_user(struct cliente lista[], char nome[100], int idade, float saldo){
+int create_user(struct cliente lista[], char nome[100], unsigned int idade, float saldo){
     struct cliente novo_cliente;
     int teste;
     novo_cliente.id = ++id;
