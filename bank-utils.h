@@ -1,10 +1,8 @@
 #ifndef BANK_UTILS_
 #define BANK_UTILS_
-#include <uuid/uuid.h>
-
 struct cliente
 {
-    uuid_t id;
+    int id;
     char nome[100];
     int idade;
     float saldo;
@@ -12,10 +10,10 @@ struct cliente
 
 int create_user(struct cliente lista[100], char nome[100], int idade, float saldo);
 
-int find_user(struct cliente lista[100], uuid_t id);
+int find_user(struct cliente lista[100], int id);
 
-int transfer(struct cliente lista[100], uuid_t id_orig, uuid_t id_dest, float quant);
+int transfer(struct cliente lista[100], int id_orig, int id_dest, float quant);
 
-int delete_user(struct cliente lista[100], uuid_t id);
+int delete_user(struct cliente lista[100], int id);
 
 #endif

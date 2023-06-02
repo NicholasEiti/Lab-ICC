@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
-#include <uuid/uuid.h>
 #include "bank-utils.h"
 
 void print_menu(){
@@ -29,17 +28,6 @@ void print_help(){
 	puts("Transferência entre usuário <id de origem> para <id de destino>\n");
 	puts("5- <id>");
 	puts("Remove usuário com id <id>\n");
-}
-
-void list_all_users(struct cliente lista[100]){
-	for(int i = 0; i < 100; i++){
-		if(!uuid_is_null(lista[i].id)){
-			printf("Usuário ID: %s", lista[i].id);
-			printf(" Nome: %s", lista[i].nome);
-			printf(" Idade: %d", lista[i].idade);
-			printf(" Saldo: R$%.2f\n", lista[i].saldo);
-		}
-	}
 }
 
 int main(){
@@ -78,7 +66,6 @@ int main(){
 				// remove_user();
 				break;
 			case '6':
-				list_all_users(clientes);
 				break;
 			case 'h':
 				print_help();
