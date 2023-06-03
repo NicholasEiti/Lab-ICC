@@ -86,6 +86,69 @@ int client_input(struct cliente *new_cliente){
 	return 1;
 }
 
+int transfer_input(int *id_orig, int *id_dest, float *quant){
+	char usr_in[50];
+	fgets(usr_in, 50, stdin);
+	usr_in[strcspn(usr_in, "\n")] = 0;
+	errno = 0;
+
+	char* token;
+	char* rest = usr_in;
+
+	// Pega e trata cada um dos dados da entrada
+	for(int i = 0; i < 3; i++){
+		// Verifica se ainda há dados válidos entre as vírgulas
+		if((token = strtok_r(rest, ",", &rest))){
+			char *endptr;
+			int temp;
+			float ftemp;
+			switch (i){
+				case 0:
+					temp = strtol(token, &endptr, 10);
+					// Verificação de validade da idade (quando o endptr não é '\0', 
+					// há caracteres que não tem valor numérico
+					if(*endptr != '\0'){
+						fprintf(stderr, "Erro: id inválido\n");
+						return 0;
+					}
+					*id_orig = temp;
+					break;
+				case 1:
+					temp = strtol(token, &endptr, 10);
+					// Verificação de validade da idade (quando o endptr não é '\0', 
+					// há caracteres que não tem valor numérico
+					if(*endptr != '\0'){
+						fprintf(stderr, "Erro: id inválido\n");
+						return 0;
+					}		
+					*id_dest = temp;			
+					break;
+				case 2:
+					ftemp = strtof(token, &endptr);
+					if(ftemp <= 0 || *endptr != '\0'){
+						fprintf(stderr, "Erro: saldo inválido\n");
+						return 0;
+					}
+					*quant = ftemp;
+					break;
+				default:
+					break;
+			}
+		}
+		else{
+			fprintf(stderr, "Erro: Falta de dados!\n");
+			return 0;
+		}
+	}
+
+	// Verificar se ainda há informação sobrando na leitura das informações
+	if(rest[0] != '\0'){
+		fprintf(stderr, "Erro: Excesso de argumentos!\n");
+		return 0;
+	}
+	return 1;
+}
+
 int main(int argc, char **argv[]){
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
@@ -119,7 +182,8 @@ int main(int argc, char **argv[]){
 				printf("");
 				int n;
 				if(!scanf("%d", &n)){
-					printf("Valor inválido!\n");
+					errno = 0;
+					fprintf(stdin, "Valor inválido!\n");
 					break;
 				}
 				getchar();
@@ -139,13 +203,39 @@ int main(int argc, char **argv[]){
 				create_users(new_clientes, n);
 				break;
 			case '3':
-				// find_user();
+				printf("");
+				int id;
+				if(!scanf("%d", &id)){
+					errno = 0;
+					fprintf(stderr, "Valor inválido!\n");
+					break;
+				}
+				getchar();
+				struct cliente c;
+				c = find_user(id);
+				if(c.id != -1){
+					printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", c.id, c.nome, c.idade, c.saldo);
+				}
 				break;
 			case '4':
-				// transfer();
+				printf("");
+				int id_orig;
+				int id_dest;
+				float quant;
+				if(transfer_input(&id_orig, &id_dest, &quant)){
+					transfer(id_orig, id_dest, quant);
+				}
 				break;
 			case '5':
-				// remove_user();
+				printf("");
+				int id_del;
+				if(!scanf("%d", &id_del)){
+					errno = 0;
+					fprintf(stderr, "Valor inválido!\n");
+					break;
+				}
+				getchar();
+				delete_user(id_del);
 				break;
 			case '6':
 				list_all_users();
@@ -154,7 +244,8 @@ int main(int argc, char **argv[]){
 				print_help();
 				break;
 			default:
-				puts("Erro: Opção inserida inválida!");
+				errno = 0;
+				fprintf(stderr, "Erro: Opção inserida inválida!\n");
 				break;
 		}
 	}

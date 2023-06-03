@@ -16,7 +16,7 @@ int create_user(struct cliente novo_cliente);
 
 int create_users(struct cliente novos_clientes[], int size);
 
-int find_user(int id);
+struct cliente find_user(int id);
 
 int transfer(int id_orig, int id_dest, float quant);
 

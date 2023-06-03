@@ -1,25 +1,25 @@
 #include "bank-utils.h"
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 unsigned int counter = 0;
 unsigned int id = 0;
 
 struct cliente lista_clientes[100];
 
+const struct cliente cliente_vazio = { -1, "", 0, 0 };
+
 void initialize_list(){
     for(int i = 0; i < 100; i++){
-        strcpy(lista_clientes[i].nome, "");
-        lista_clientes[i].id = -1;
-        lista_clientes[i].idade = 0;
-        lista_clientes[i].saldo = 0;
+        lista_clientes[i] = cliente_vazio;
     }
 }
 
 void list_all_users(){
     for (int i = 0; i < 100; i++){
         if(lista_clientes[i].id != -1){
-            printf("id: %d nome: %s idade: %u saldo: R$%.2f\n", 
+            printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", 
             lista_clientes[i].id, lista_clientes[i].nome, lista_clientes[i].idade, lista_clientes[i].saldo);
         }
     }
@@ -52,15 +52,29 @@ int create_users(struct cliente novos_clientes[], int size){
 /// @param lista a lista de clientes
 /// @param id identificação do cliente
 /// @return Retorna o index do usuário em referência a lista; retorna -1 caso o usuário não seja encontrado/inválido
-int find_user(int id){
-    // for(int i = 0; i < 100; i++){
-    //     if(lista[i].id == id && lista[i].nome != ""){
-    //         return i;
-    //     }
-    // }
-    // return -1;
+struct cliente find_user(int id){
+    for(int i = 0; i < 100; i++){
+        if(lista_clientes[i].id == -1) continue;
+        if(lista_clientes[i].id == id){
+            return lista_clientes[i];
+        }
+    }
+    errno = 0;
+    fprintf(stderr, "Cliente com id %d inesistente!\n", id);
+    return cliente_vazio;
 }
 
+struct cliente *find_user_ptr(int id){
+    for(int i = 0; i < 100; i++){
+        if(lista_clientes[i].id == -1) continue;
+        if(lista_clientes[i].id == id){
+            return &lista_clientes[i];
+        }
+    }
+    errno = 0;
+    fprintf(stderr, "Cliente com id %d inesistente!\n", id);
+    return NULL;
+}
 
 /// @brief Transferência entre dois usuários
 /// @param id_orig id da origem da transferência
@@ -70,31 +84,29 @@ int find_user(int id){
 /// retorna -1 caso a transferência seja inválida por outro motivo
 int transfer(int id_orig, int id_dest, float quant){
     // Achar o usuário id_orig
-    int index_orig = find_user(id_orig);
-    if(index_orig == -1){ return 0; }
+    struct cliente *org = find_user_ptr(id_orig);
+    if(org->id == cliente_vazio.id){ return 0; }
 
     // Achar o usuário id_dest
-    int index_dest = find_user(id_dest);
-    if(index_dest == -1){ return 0; }
+    struct cliente *dest = find_user_ptr(id_orig);
+    if(dest->id == cliente_vazio.id){ return 0; }
 
-    if(lista_clientes[index_orig].saldo < quant){
-        return -1;
+    if(org->saldo < quant){
+        errno = 0;
+        fprintf(stderr, "Transferência com saldo insuficiente!\n");
+        return 0;
     }
 
-    lista_clientes[index_orig].saldo -= quant;
-    lista_clientes[index_dest].saldo += quant;
+    org->saldo = org->saldo - quant;
+    dest->saldo = dest->saldo + quant;
+    puts("Transferência realizada com sucesso.");
 }
 
 /// @brief Deleta usuário a partir do id; Esta função não remove a instância da lista, apenas esvazia ela
 int delete_user(int id){
-    int user_index = find_user(id);
-    if(user_index == -1){
-        return 0;
-    }
-
-    // Não estamos deletando, estamos apenas deixando o usuário vazio
-    strcpy(lista_clientes[user_index].nome, "");
-    lista_clientes[user_index].id = -1;
-    lista_clientes[user_index].idade = 0;
-    lista_clientes[user_index].saldo = 0;
+    struct cliente *c = find_user_ptr(id);
+    if(c == NULL){ return 0; }
+    printf("Cliente com id %d deletado.", id);
+    *c = cliente_vazio;
+    return 1;
 }
