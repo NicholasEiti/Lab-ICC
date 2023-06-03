@@ -45,36 +45,34 @@ int client_input(struct cliente *new_cliente){
 	// Pega e trata cada um dos dados do cliente
 	for(int i = 0; i < 3; i++){
 		// Verifica se ainda há dados válidos entre as vírgulas
-		if((token = strtok_r(rest, ",", &rest))){
-			char *endptr;
-			int temp;
-			switch (i){
-				case 0:
-					strcpy(new_cliente->nome, token);
-					break;
-				case 1:
-					temp = strtol(token, &endptr, 10);
-					// Verificação de validade da idade (quando o endptr não é '\0', 
-					// há caracteres que não tem valor numérico
-					if(temp < 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: idade inválida\n");
-						return 0;
-					}
-					new_cliente->idade = (unsigned int)temp;
-				case 2:
-					new_cliente->saldo = strtof(token, &endptr);
-					if(new_cliente->saldo < 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: saldo inválida\n");
-						return 0;
-					}
-					break;
-				default:
-					break;
-			}
-		}
-		else{
+		if(!(token = strtok_r(rest, ",", &rest))){
 			fprintf(stderr, "Erro: Falta de dados!\n");
 			return 0;
+		}
+		char *endptr;
+		int temp;
+		switch (i){
+			case 0:
+				strcpy(new_cliente->nome, token);
+				break;
+			case 1:
+				temp = strtol(token, &endptr, 10);
+				// Verificação de validade da idade (quando o endptr não é '\0', 
+				// há caracteres que não tem valor numérico
+				if(temp < 0 || *endptr != '\0'){
+					fprintf(stderr, "Erro: idade inválida\n");
+					return 0;
+				}
+				new_cliente->idade = (unsigned int)temp;
+			case 2:
+				new_cliente->saldo = strtof(token, &endptr);
+				if(new_cliente->saldo < 0 || *endptr != '\0'){
+					fprintf(stderr, "Erro: saldo inválida\n");
+					return 0;
+				}
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -98,46 +96,44 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 	// Pega e trata cada um dos dados da entrada
 	for(int i = 0; i < 3; i++){
 		// Verifica se ainda há dados válidos entre as vírgulas
-		if((token = strtok_r(rest, ",", &rest))){
-			char *endptr;
-			int temp;
-			float ftemp;
-			switch (i){
-				case 0:
-					temp = strtol(token, &endptr, 10);
-					// Verificação de validade da idade (quando o endptr não é '\0', 
-					// há caracteres que não tem valor numérico
-					if(*endptr != '\0'){
-						fprintf(stderr, "Erro: id inválido\n");
-						return 0;
-					}
-					*id_orig = temp;
-					break;
-				case 1:
-					temp = strtol(token, &endptr, 10);
-					// Verificação de validade da idade (quando o endptr não é '\0', 
-					// há caracteres que não tem valor numérico
-					if(*endptr != '\0'){
-						fprintf(stderr, "Erro: id inválido\n");
-						return 0;
-					}		
-					*id_dest = temp;			
-					break;
-				case 2:
-					ftemp = strtof(token, &endptr);
-					if(ftemp <= 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: saldo inválido\n");
-						return 0;
-					}
-					*quant = ftemp;
-					break;
-				default:
-					break;
-			}
-		}
-		else{
+		if(!(token = strtok_r(rest, ",", &rest))){
 			fprintf(stderr, "Erro: Falta de dados!\n");
 			return 0;
+		}
+		char *endptr;
+		int temp;
+		float ftemp;
+		switch (i){
+			case 0:
+				temp = strtol(token, &endptr, 10);
+				// Verificação de validade da idade (quando o endptr não é '\0', 
+				// há caracteres que não tem valor numérico
+				if(*endptr != '\0'){
+					fprintf(stderr, "Erro: id inválido\n");
+					return 0;
+				}
+				*id_orig = temp;
+				break;
+			case 1:
+				temp = strtol(token, &endptr, 10);
+				// Verificação de validade da idade (quando o endptr não é '\0', 
+				// há caracteres que não tem valor numérico
+				if(*endptr != '\0'){
+					fprintf(stderr, "Erro: id inválido\n");
+					return 0;
+				}		
+				*id_dest = temp;			
+				break;
+			case 2:
+				ftemp = strtof(token, &endptr);
+				if(ftemp <= 0 || *endptr != '\0'){
+					fprintf(stderr, "Erro: saldo inválido\n");
+					return 0;
+				}
+				*quant = ftemp;
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -165,6 +161,8 @@ int main(int argc, char **argv[]){
 		}
 		getchar();
 
+		int n_in;
+		char **in;
 		switch(op){
 			case '0':
 				// Sair e criar arquivo .txt
@@ -179,9 +177,7 @@ int main(int argc, char **argv[]){
 				}
 				break;
 			case '2':
-				printf("");
-				int n;
-				if(!scanf("%d", &n)){
+				if(!scanf("%d", &n_in)){
 					errno = 0;
 					fprintf(stdin, "Valor inválido!\n");
 					break;
@@ -189,9 +185,9 @@ int main(int argc, char **argv[]){
 				getchar();
 
 				struct cliente *new_clientes;
-				new_clientes = (struct cliente *)malloc(n*sizeof(struct cliente));
+				new_clientes = (struct cliente *)malloc(n_in*sizeof(struct cliente));
 
-				for (int i = 0; i < n; i++){
+				for (int i = 0; i < n_in; i++){
 					struct cliente new_cliente;
 					if(client_input(&new_cliente)){
 						new_clientes[i] = new_cliente;
@@ -200,19 +196,17 @@ int main(int argc, char **argv[]){
 						goto loopstart;
 					}
 				}
-				create_users(new_clientes, n);
+				create_users(new_clientes, n_in);
 				break;
 			case '3':
-				printf("");
-				int id;
-				if(!scanf("%d", &id)){
+				if(!scanf("%d", &n_in)){
 					errno = 0;
 					fprintf(stderr, "Valor inválido!\n");
 					break;
 				}
 				getchar();
 				struct cliente c;
-				c = find_user(id);
+				c = find_user(n_in);
 				if(c.id != -1){
 					printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", c.id, c.nome, c.idade, c.saldo);
 				}
@@ -227,15 +221,13 @@ int main(int argc, char **argv[]){
 				}
 				break;
 			case '5':
-				printf("");
-				int id_del;
-				if(!scanf("%d", &id_del)){
+				if(!scanf("%d", &n_in)){
 					errno = 0;
 					fprintf(stderr, "Valor inválido!\n");
 					break;
 				}
 				getchar();
-				delete_user(id_del);
+				delete_user(n_in);
 				break;
 			case '6':
 				list_all_users();
