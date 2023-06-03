@@ -88,7 +88,7 @@ int transfer(int id_orig, int id_dest, float quant){
     if(org->id == cliente_vazio.id){ return 0; }
 
     // Achar o usuário id_dest
-    struct cliente *dest = find_user_ptr(id_orig);
+    struct cliente *dest = find_user_ptr(id_dest);
     if(dest->id == cliente_vazio.id){ return 0; }
 
     if(org->saldo < quant){
@@ -96,10 +96,9 @@ int transfer(int id_orig, int id_dest, float quant){
         fprintf(stderr, "Transferencia com saldo insuficiente!\n");
         return 0;
     }
-
-    org->saldo = org->saldo - quant;
-    dest->saldo = dest->saldo + quant;
-    puts("Transferencia realizada com sucesso.");
+    org->saldo -= quant;
+    dest->saldo += quant;
+    puts("Transferência realizada com sucesso.");
 }
 
 /// @brief Deleta usuário a partir do id; Esta função não remove a instância da lista, apenas esvazia ela
