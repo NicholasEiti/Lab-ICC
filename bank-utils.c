@@ -29,13 +29,13 @@ void list_all_users(){
 int create_user(struct cliente novo_cliente){
     lista_clientes[counter] = novo_cliente;
     lista_clientes[counter].id = ++id;
-    printf("Usuário inserido com id %d com sucesso\n", id);
+    printf("Cliente inserido com id %d com sucesso\n", id);
     counter++;
     return 1;
 }
 
 int create_users(struct cliente novos_clientes[], int size){
-    printf("Usuários inseridos com id ");
+    printf("Clientes inseridos com id ");
     for(int i = 0; i < size; i++){
         lista_clientes[counter] = novos_clientes[i];
         lista_clientes[counter].id = ++id;
@@ -93,13 +93,13 @@ int transfer(int id_orig, int id_dest, float quant){
 
     if(org->saldo < quant){
         errno = 0;
-        fprintf(stderr, "Transferência com saldo insuficiente!\n");
+        fprintf(stderr, "Transferencia com saldo insuficiente!\n");
         return 0;
     }
 
     org->saldo = org->saldo - quant;
     dest->saldo = dest->saldo + quant;
-    puts("Transferência realizada com sucesso.");
+    puts("Transferencia realizada com sucesso.");
 }
 
 /// @brief Deleta usuário a partir do id; Esta função não remove a instância da lista, apenas esvazia ela

@@ -8,28 +8,28 @@
 void print_menu(){
 	puts("------------MENU UAI BANK------------");
 	puts("0- Sair");
-	puts("1- Inserção de um novo usuário");
-	puts("2- Inserção de vários usuários");
-	puts("3- Busca de um usuário por id");
-	puts("4- Transferência entre usuários");
-	puts("5- Remoção de usuário");
-	puts("h- Exibição do guia de ajuda");
+	puts("1- Inserir um novo clientes");
+	puts("2- Inserir varios clientes");
+	puts("3- Buscar um cliente por id");
+	puts("4- Transferir entre clientes");
+	puts("5- Remover clientes");
+	puts("h- Exibir do guia de ajuda");
 }
 
 void print_help(){
 	puts("\n------------GUIA UAI BANK------------");
-	puts("0- Sai do menu e cria um arquivo .txt da base de usuários");
+	puts("0- Sai do menu e cria um arquivo .txt da base de clientes");
 	puts("1- <nome>, <idade>, <saldo atual>");
-	puts("Insere um usuário com nome, idade e saldo\n");
-	puts("2- <qtde usuários>");
-	puts("<nome>, <idade>, <saldo atual>(de cada usuário)");
-	puts("Insere uma quantidade <qtde usuários> de usuários com nome, idade e saldo\n");
+	puts("Insere um cliente com nome, idade e saldo\n");
+	puts("2- <qtde clientes>");
+	puts("<nome>, <idade>, <saldo atual>(de cada cliente)");
+	puts("Insere uma quantidade <qtde clientes> de clientes com nome, idade e saldo\n");
 	puts("3- <id>");
-	puts("Realiza uma busca de um usuário com id <id>\n");
+	puts("Realiza uma busca de um cliente com id <id>\n");
 	puts("4- <id de origem> <id de destino> <quantia>");
-	puts("Transferência entre usuário <id de origem> para <id de destino>\n");
+	puts("Transferência entre cliente <id de origem> para <id de destino>\n");
 	puts("5- <id>");
-	puts("Remove usuário com id <id>\n");
+	puts("Remove cliente com id <id>\n");
 }
 
 /// @brief Cuida de toda a leitura referente ao cadastro de usuário
@@ -57,14 +57,14 @@ int client_input(struct cliente *new_cliente){
 					// Verificação de validade da idade (quando o endptr não é '\0', 
 					// há caracteres que não tem valor numérico
 					if(temp < 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: idade inválida\n");
+						fprintf(stderr, "Erro: idade invalida\n");
 						return 0;
 					}
 					new_cliente->idade = (unsigned int)temp;
 				case 2:
 					new_cliente->saldo = strtof(token, &endptr);
 					if(new_cliente->saldo < 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: saldo inválida\n");
+						fprintf(stderr, "Erro: saldo invalida\n");
 						return 0;
 					}
 					break;
@@ -108,7 +108,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 					// Verificação de validade da idade (quando o endptr não é '\0', 
 					// há caracteres que não tem valor numérico
 					if(*endptr != '\0'){
-						fprintf(stderr, "Erro: id inválido\n");
+						fprintf(stderr, "Erro: id invalido\n");
 						return 0;
 					}
 					*id_orig = temp;
@@ -118,7 +118,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 					// Verificação de validade da idade (quando o endptr não é '\0', 
 					// há caracteres que não tem valor numérico
 					if(*endptr != '\0'){
-						fprintf(stderr, "Erro: id inválido\n");
+						fprintf(stderr, "Erro: id invalido\n");
 						return 0;
 					}		
 					*id_dest = temp;			
@@ -126,7 +126,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 				case 2:
 					ftemp = strtof(token, &endptr);
 					if(ftemp <= 0 || *endptr != '\0'){
-						fprintf(stderr, "Erro: saldo inválido\n");
+						fprintf(stderr, "Erro: saldo invalido\n");
 						return 0;
 					}
 					*quant = ftemp;
@@ -158,7 +158,7 @@ int main(int argc, char **argv[]){
 	while(1){
 		char op;
 		loopstart:
-		fputs("\nInsira uma opção: ", stdout);
+		fputs("\nInsira uma opcao: ", stdout);
 		op = getchar();
 		if(op == '\n'){
 			continue;
@@ -183,7 +183,7 @@ int main(int argc, char **argv[]){
 				int n;
 				if(!scanf("%d", &n)){
 					errno = 0;
-					fprintf(stdin, "Valor inválido!\n");
+					fprintf(stdin, "Valor invalido!\n");
 					break;
 				}
 				getchar();
@@ -207,7 +207,7 @@ int main(int argc, char **argv[]){
 				int id;
 				if(!scanf("%d", &id)){
 					errno = 0;
-					fprintf(stderr, "Valor inválido!\n");
+					fprintf(stderr, "Valor invalido!\n");
 					break;
 				}
 				getchar();
@@ -231,7 +231,7 @@ int main(int argc, char **argv[]){
 				int id_del;
 				if(!scanf("%d", &id_del)){
 					errno = 0;
-					fprintf(stderr, "Valor inválido!\n");
+					fprintf(stderr, "Valor invalido!\n");
 					break;
 				}
 				getchar();
@@ -245,7 +245,7 @@ int main(int argc, char **argv[]){
 				break;
 			default:
 				errno = 0;
-				fprintf(stderr, "Erro: Opção inserida inválida!\n");
+				fprintf(stderr, "Erro: Opcao inserida invalida!\n");
 				break;
 		}
 	}
