@@ -36,7 +36,7 @@ void print_help(){
 int client_input(struct cliente *new_cliente){
 	char usr_in[150];
 	fgets(usr_in, 150, stdin);
-	strtok(usr_in, "\n"); // Remove o caractere \n do input
+	usr_in[strcspn(usr_in, "\n")] = 0;
 	errno = 0;
 
 	char* token;
@@ -86,8 +86,7 @@ int client_input(struct cliente *new_cliente){
 	return 1;
 }
 
-int main(){
-	struct cliente lista_clientes[100];
+int main(int argc, char **argv[]){
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
 
@@ -95,8 +94,13 @@ int main(){
 
 	while(1){
 		char op;
-		fputs("Insira uma opção: ", stdout);
+		loopstart:
+		fputs("\nInsira uma opção: ", stdout);
 		op = getchar();
+		if(op == '\n'){
+			continue;
+		}
+		getchar();
 
 		switch(op){
 			case '0':
@@ -108,13 +112,31 @@ int main(){
 				struct cliente new_cliente;
 				
 				if(client_input(&new_cliente)){
-					int id;
-					create_user(new_cliente, &id);
-					printf("Usuário inserido com id %d com sucesso\n", id);
+					create_user(new_cliente);
 				}
 				break;
 			case '2':
-				printf("Usuários inseridos com id - com sucesso\n");
+				printf("");
+				int n;
+				if(!scanf("%d", &n)){
+					printf("Valor inválido!\n");
+					break;
+				}
+				getchar();
+
+				struct cliente *new_clientes;
+				new_clientes = (struct cliente *)malloc(n*sizeof(struct cliente));
+
+				for (int i = 0; i < n; i++){
+					struct cliente new_cliente;
+					if(client_input(&new_cliente)){
+						new_clientes[i] = new_cliente;
+					}
+					else{
+						goto loopstart;
+					}
+				}
+				create_users(new_clientes, n);
 				break;
 			case '3':
 				// find_user();
@@ -132,9 +154,8 @@ int main(){
 				print_help();
 				break;
 			default:
-				puts("Erro: Opção inserida inválida!\n\n");
+				puts("Erro: Opção inserida inválida!");
 				break;
 		}
-		getchar();
 	}
 }

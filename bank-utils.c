@@ -19,19 +19,33 @@ void initialize_list(){
 void list_all_users(){
     for (int i = 0; i < 100; i++){
         if(lista_clientes[i].id != -1){
-            printf("id: %d nome: %s idade: %u saldo: %f\n", 
+            printf("id: %d nome: %s idade: %u saldo: R$%.2f\n", 
             lista_clientes[i].id, lista_clientes[i].nome, lista_clientes[i].idade, lista_clientes[i].saldo);
         }
     }
 }
 
 /// @brief Cria um usuário com id, nome, idade e saldo
-int create_user(struct cliente novo_cliente, int* out_id){
+int create_user(struct cliente novo_cliente){
     lista_clientes[counter] = novo_cliente;
     lista_clientes[counter].id = ++id;
-    *out_id = id;
+    printf("Usuário inserido com id %d com sucesso\n", id);
     counter++;
     return 1;
+}
+
+int create_users(struct cliente novos_clientes[], int size){
+    printf("Usuários inseridos com id ");
+    for(int i = 0; i < size; i++){
+        lista_clientes[counter] = novos_clientes[i];
+        lista_clientes[counter].id = ++id;
+        printf("%d", id);
+        if(i != size-1){
+            printf(",");
+        }
+        counter++;
+    }
+    printf(" com sucesso\n");
 }
 
 /// @brief Acha usuário a partir do id

@@ -12,7 +12,9 @@ void initialize_list();
 
 void list_all_users();
 
-int create_user(struct cliente novo_cliente, int* out_id);
+int create_user(struct cliente novo_cliente);
+
+int create_users(struct cliente novos_clientes[], int size);
 
 int find_user(int id);
 
