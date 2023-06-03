@@ -32,9 +32,8 @@ void print_help(){
 	puts("Remove usuário com id <id>\n");
 }
 
-// Adicionar função para ler as entradas dos clientes por meio de pointers
-// Se o id fosse 
-int client_input(char nome[], unsigned int *idade, float *saldo){
+/// @brief Cuida de toda a leitura referente ao cadastro de usuário
+int client_input(struct cliente *new_cliente){
 	char usr_in[150];
 	fgets(usr_in, 150, stdin);
 	strtok(usr_in, "\n"); // Remove o caractere \n do input
@@ -43,14 +42,15 @@ int client_input(char nome[], unsigned int *idade, float *saldo){
 	char* token;
 	char* rest = usr_in;
 
-	// Pega e trata cada uma dos dados do cliente
+	// Pega e trata cada um dos dados do cliente
 	for(int i = 0; i < 3; i++){
+		// Verifica se ainda há dados válidos entre as vírgulas
 		if((token = strtok_r(rest, ",", &rest))){
 			char *endptr;
 			int temp;
 			switch (i){
 				case 0:
-					strcpy(nome, token);
+					strcpy(new_cliente->nome, token);
 					break;
 				case 1:
 					temp = strtol(token, &endptr, 10);
@@ -60,10 +60,10 @@ int client_input(char nome[], unsigned int *idade, float *saldo){
 						fprintf(stderr, "Erro: idade inválida\n");
 						return 0;
 					}
-					*idade = (unsigned int)temp;
+					new_cliente->idade = (unsigned int)temp;
 				case 2:
-					*saldo = strtof(token, &endptr);
-					if(*saldo < 0 || *endptr != '\0'){
+					new_cliente->saldo = strtof(token, &endptr);
+					if(new_cliente->saldo < 0 || *endptr != '\0'){
 						fprintf(stderr, "Erro: saldo inválida\n");
 						return 0;
 					}
@@ -87,16 +87,17 @@ int client_input(char nome[], unsigned int *idade, float *saldo){
 }
 
 int main(){
-	struct cliente clientes[100];
+	struct cliente lista_clientes[100];
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
+
+	initialize_list();
 
 	while(1){
 		char op;
 		fputs("Insira uma opção: ", stdout);
 		op = getchar();
 
-		getchar(); // Capturar enter
 		switch(op){
 			case '0':
 				// Sair e criar arquivo .txt
@@ -104,18 +105,15 @@ int main(){
 				return 0;
 			case '1':
 				printf("");
-				char nome[100];
-				unsigned int idade;
-				float saldo;
-				if(client_input(nome, &idade, &saldo)){
-					printf("Usuário inserido com id - com sucesso\n");
-					printf("%s %u %.2f\n", nome, idade, saldo);
-					create_user(clientes, nome, idade, saldo);
-				}
+				struct cliente new_cliente;
 				
+				if(client_input(&new_cliente)){
+					int id;
+					create_user(new_cliente, &id);
+					printf("Usuário inserido com id %d com sucesso\n", id);
+				}
 				break;
 			case '2':
-				// create_user();
 				printf("Usuários inseridos com id - com sucesso\n");
 				break;
 			case '3':
@@ -128,6 +126,7 @@ int main(){
 				// remove_user();
 				break;
 			case '6':
+				list_all_users();
 				break;
 			case 'h':
 				print_help();
@@ -136,5 +135,6 @@ int main(){
 				puts("Erro: Opção inserida inválida!\n\n");
 				break;
 		}
+		getchar();
 	}
 }

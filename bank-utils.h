@@ -8,12 +8,16 @@ struct cliente
     float saldo;
 };
 
-int create_user(struct cliente lista[100], char nome[100], unsigned int idade, float saldo);
+void initialize_list();
 
-int find_user(struct cliente lista[100], int id);
+void list_all_users();
 
-int transfer(struct cliente lista[100], int id_orig, int id_dest, float quant);
+int create_user(struct cliente novo_cliente, int* out_id);
 
-int delete_user(struct cliente lista[100], int id);
+int find_user(int id);
+
+int transfer(int id_orig, int id_dest, float quant);
+
+int delete_user(int id);
 
 #endif
