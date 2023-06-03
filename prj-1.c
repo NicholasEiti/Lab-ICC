@@ -43,12 +43,9 @@ int client_input(struct cliente *new_cliente){
 	char* rest = usr_in;
 
 	// Pega e trata cada um dos dados do cliente
-	for(int i = 0; i < 3; i++){
-		// Verifica se ainda há dados válidos entre as vírgulas
-		if(!(token = strtok_r(rest, ",", &rest))){
-			fprintf(stderr, "Erro: Falta de dados!\n");
-			return 0;
-		}
+	token = strtok(rest, ",");
+	int i = 0;
+	while (token != NULL){
 		char *endptr;
 		int temp;
 		switch (i){
@@ -60,25 +57,28 @@ int client_input(struct cliente *new_cliente){
 				// Verificação de validade da idade (quando o endptr não é '\0', 
 				// há caracteres que não tem valor numérico
 				if(temp < 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: idade inválida\n");
+					fprintf(stderr, "Erro: idade invalida\n");
 					return 0;
 				}
 				new_cliente->idade = (unsigned int)temp;
 			case 2:
 				new_cliente->saldo = strtof(token, &endptr);
 				if(new_cliente->saldo < 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: saldo inválida\n");
+					fprintf(stderr, "Erro: saldo invalido\n");
 					return 0;
 				}
 				break;
 			default:
+				// Verificar se ainda há informação sobrando na leitura das informações
+				fprintf(stderr, "Erro: Excesso de argumentos!\n");
+				return 0;
 				break;
 		}
+		token = strtok(NULL, ",");
+		i++;
 	}
-
-	// Verificar se ainda há informação sobrando na leitura das informações
-	if(rest[0] != '\0'){
-		fprintf(stderr, "Erro: Excesso de argumentos!\n");
+	if(i < 3){
+		fprintf(stderr, "Erro: Falta de dados!\n");
 		return 0;
 	}
 	return 1;
@@ -92,14 +92,11 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 
 	char* token;
 	char* rest = usr_in;
-
+	
 	// Pega e trata cada um dos dados da entrada
-	for(int i = 0; i < 3; i++){
-		// Verifica se ainda há dados válidos entre as vírgulas
-		if(!(token = strtok_r(rest, ",", &rest))){
-			fprintf(stderr, "Erro: Falta de dados!\n");
-			return 0;
-		}
+	token = strtok(rest, ",");
+	int i = 0;
+	while (token != NULL){
 		char *endptr;
 		int temp;
 		float ftemp;
@@ -109,7 +106,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 				// Verificação de validade da idade (quando o endptr não é '\0', 
 				// há caracteres que não tem valor numérico
 				if(*endptr != '\0'){
-					fprintf(stderr, "Erro: id inválido\n");
+					fprintf(stderr, "Erro: id de origem invalido\n");
 					return 0;
 				}
 				*id_orig = temp;
@@ -119,7 +116,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 				// Verificação de validade da idade (quando o endptr não é '\0', 
 				// há caracteres que não tem valor numérico
 				if(*endptr != '\0'){
-					fprintf(stderr, "Erro: id inválido\n");
+					fprintf(stderr, "Erro: id de destino invalido\n");
 					return 0;
 				}		
 				*id_dest = temp;			
@@ -127,19 +124,22 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 			case 2:
 				ftemp = strtof(token, &endptr);
 				if(ftemp <= 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: saldo inválido\n");
+					fprintf(stderr, "Erro: saldo invalido\n");
 					return 0;
 				}
 				*quant = ftemp;
 				break;
 			default:
+				// Verificar se ainda há informação sobrando na leitura das informações
+				fprintf(stderr, "Erro: Excesso de argumentos!\n");
+				return 0;
 				break;
 		}
+		token = strtok(NULL, ",");
+		i++;
 	}
-
-	// Verificar se ainda há informação sobrando na leitura das informações
-	if(rest[0] != '\0'){
-		fprintf(stderr, "Erro: Excesso de argumentos!\n");
+	if(i < 3){
+		fprintf(stderr, "Erro: Falta de dados!\n");
 		return 0;
 	}
 	return 1;
