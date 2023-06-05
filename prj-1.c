@@ -34,114 +34,67 @@ void print_help(){
 
 /// @brief Cuida de toda a leitura referente ao cadastro de usuário
 int client_input(struct cliente *new_cliente){
-	char usr_in[150];
-	fgets(usr_in, 150, stdin);
-	usr_in[strcspn(usr_in, "\n")] = 0;
-	errno = 0;
-
-	char* token;
-	char* rest = usr_in;
-
-	// Pega e trata cada um dos dados do cliente
-	token = strtok(rest, ",");
-	int i = 0;
-	while (token != NULL){
-		char *endptr;
-		int temp;
-		switch (i){
-			case 0:
-				strcpy(new_cliente->nome, token);
-				break;
-			case 1:
-				temp = strtol(token, &endptr, 10);
-				// Verificação de validade da idade (quando o endptr não é '\0', 
-				// há caracteres que não tem valor numérico
-				if(temp < 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: idade invalida\n");
-					return 0;
-				}
-				new_cliente->idade = (unsigned int)temp;
-			case 2:
-				new_cliente->saldo = strtof(token, &endptr);
-				if(new_cliente->saldo < 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: saldo invalido\n");
-					return 0;
-				}
-				break;
-			default:
-				// Verificar se ainda há informação sobrando na leitura das informações
-				fprintf(stderr, "Erro: Excesso de argumentos!\n");
-				return 0;
-				break;
-		}
-		token = strtok(NULL, ",");
-		i++;
+	char** usr_in;
+	usr_in = malloc(NOME_LEN+20);
+	if(!(line_input(3, NOME_LEN+20, ",", usr_in))){
+		return 0;
 	}
-	if(i < 3){
-		fprintf(stderr, "Erro: Falta de dados!\n");
+	
+	strcpy(new_cliente->nome, usr_in[0]);
+
+	char *endptr;
+	int temp = strtol(usr_in[1], &endptr, 10);
+	// Verificação de validade da idade (quando o endptr não é '\0', 
+	// há caracteres que não tem valor numérico
+	if(temp < 0 || *endptr != '\0'){
+		fprintf(stderr, "Erro: idade invalida\n");
+		return 0;
+	}
+	new_cliente->idade = (unsigned int)temp;
+
+	new_cliente->saldo = strtof(usr_in[2], &endptr);
+	if(new_cliente->saldo < 0 || *endptr != '\0'){
+		new_cliente->saldo = 0;
+		fprintf(stderr, "Erro: saldo invalido\n");
 		return 0;
 	}
 	return 1;
 }
 
 int transfer_input(int *id_orig, int *id_dest, float *quant){
-	char usr_in[50];
-	fgets(usr_in, 50, stdin);
-	usr_in[strcspn(usr_in, "\n")] = 0;
-	errno = 0;
-
-	char* token;
-	char* rest = usr_in;
-	
-	// Pega e trata cada um dos dados da entrada
-	token = strtok(rest, ",");
-	int i = 0;
-	while (token != NULL){
-		char *endptr;
-		int temp;
-		float ftemp;
-		switch (i){
-			case 0:
-				temp = strtol(token, &endptr, 10);
-				// Verificação de validade da idade (quando o endptr não é '\0', 
-				// há caracteres que não tem valor numérico
-				if(*endptr != '\0'){
-					fprintf(stderr, "Erro: id de origem invalido\n");
-					return 0;
-				}
-				*id_orig = temp;
-				break;
-			case 1:
-				temp = strtol(token, &endptr, 10);
-				// Verificação de validade da idade (quando o endptr não é '\0', 
-				// há caracteres que não tem valor numérico
-				if(*endptr != '\0'){
-					fprintf(stderr, "Erro: id de destino invalido\n");
-					return 0;
-				}		
-				*id_dest = temp;			
-				break;
-			case 2:
-				ftemp = strtof(token, &endptr);
-				if(ftemp <= 0 || *endptr != '\0'){
-					fprintf(stderr, "Erro: saldo invalido\n");
-					return 0;
-				}
-				*quant = ftemp;
-				break;
-			default:
-				// Verificar se ainda há informação sobrando na leitura das informações
-				fprintf(stderr, "Erro: Excesso de argumentos!\n");
-				return 0;
-				break;
-		}
-		token = strtok(NULL, ",");
-		i++;
-	}
-	if(i < 3){
-		fprintf(stderr, "Erro: Falta de dados!\n");
+	char** usr_in;
+	usr_in = malloc(30);
+	if(!(line_input(3, 30, " ", usr_in))){
 		return 0;
 	}
+
+	char* endptr;
+
+	int temp = strtol(usr_in[0], &endptr, 10);
+	// Verificação de validade do id (quando o endptr não é '\0', 
+	// há caracteres que não tem valor numérico
+	if(*endptr != '\0'){
+		fprintf(stderr, "Erro: id de origem invalido\n");
+		return 0;
+	}
+	*id_orig = temp;
+
+	temp = strtol(usr_in[1], &endptr, 10);
+	// Verificação de validade da idade (quando o endptr não é '\0', 
+	// há caracteres que não tem valor numérico
+	if(*endptr != '\0'){
+		fprintf(stderr, "Erro: id de destino invalido\n");
+		return 0;
+	}		
+	*id_dest = temp;
+
+	float ftemp = strtof(usr_in[2], &endptr);
+	if(ftemp <= 0 || *endptr != '\0'){
+		fprintf(stderr, "Erro: saldo invalido\n");
+		return 0;
+	}
+	*quant = ftemp;
+	
 	return 1;
 }
 
@@ -197,6 +150,7 @@ int main(int argc, char **argv[]){
 					}
 				}
 				create_users(new_clientes, n_in);
+				free(new_clientes);
 				break;
 			case '3':
 				if(!scanf("%d", &n_in)){
@@ -217,7 +171,13 @@ int main(int argc, char **argv[]){
 				int id_dest;
 				float quant;
 				if(transfer_input(&id_orig, &id_dest, &quant)){
-					transfer(id_orig, id_dest, quant);
+					if(transfer(id_orig, id_dest, quant)){
+						puts("Transferencia realizada com sucesso.");
+					}
+					else{
+						errno = 0;
+        				fprintf(stderr, "Transferencia cancelada.\n");
+					}
 				}
 				break;
 			case '5':

@@ -25,7 +25,7 @@ void list_all_users(){
     }
 }
 
-/// @brief Cria um usuário com id, nome, idade e saldo
+/// @brief Cria um usuário na lista
 int create_user(struct cliente novo_cliente){
     lista_clientes[counter] = novo_cliente;
     lista_clientes[counter].id = ++id;
@@ -51,7 +51,7 @@ int create_users(struct cliente novos_clientes[], int size){
 /// @brief Acha usuário a partir do id
 /// @param lista a lista de clientes
 /// @param id identificação do cliente
-/// @return Retorna o index do usuário em referência a lista; retorna -1 caso o usuário não seja encontrado/inválido
+/// @return Retorna o usuário de acordo com id; Retorna um usuário vazio caso o usuário não seja encontrado
 struct cliente find_user(int id){
     for(int i = 0; i < 100; i++){
         if(lista_clientes[i].id == -1) continue;
@@ -85,11 +85,11 @@ struct cliente *find_user_ptr(int id){
 int transfer(int id_orig, int id_dest, float quant){
     // Achar o usuário id_orig
     struct cliente *org = find_user_ptr(id_orig);
-    if(org->id == cliente_vazio.id){ return 0; }
+    if(org == NULL){ return 0; }
 
     // Achar o usuário id_dest
     struct cliente *dest = find_user_ptr(id_dest);
-    if(dest->id == cliente_vazio.id){ return 0; }
+    if(dest == NULL){ return 0; }
 
     if(org->saldo < quant){
         errno = 0;
@@ -98,7 +98,7 @@ int transfer(int id_orig, int id_dest, float quant){
     }
     org->saldo -= quant;
     dest->saldo += quant;
-    puts("Transferência realizada com sucesso.");
+    return 1;
 }
 
 /// @brief Deleta usuário a partir do id; Esta função não remove a instância da lista, apenas esvazia ela
@@ -108,4 +108,31 @@ int delete_user(int id){
     printf("Cliente com id %d deletado.", id);
     *c = cliente_vazio;
     return 1;
+}
+
+int line_input(int argc, int size, char* delim, char** args){
+    char usr_in[size];
+	fgets(usr_in, size, stdin);
+	usr_in[strcspn(usr_in, "\n")] = 0;
+	errno = 0;
+
+	char* token;
+	char* rest = usr_in;
+	
+	token = strtok(rest, delim);
+	int i = 0;
+	while (token != NULL){
+        if(i >= argc){
+            fprintf(stderr, "Erro: Excesso de argumentos!\n");
+            return 0;
+        }
+        args[i] = token;
+		token = strtok(NULL, delim);
+		i++;
+	}
+	if(i < argc){
+		fprintf(stderr, "Erro: Falta de dados!\n");
+		return 0;
+	}
+	return 1;
 }

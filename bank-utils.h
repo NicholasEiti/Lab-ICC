@@ -1,5 +1,8 @@
 #ifndef BANK_UTILS_
 #define BANK_UTILS_
+
+#define NOME_LEN 100
+
 struct cliente
 {
     int id;
@@ -21,5 +24,7 @@ struct cliente find_user(int id);
 int transfer(int id_orig, int id_dest, float quant);
 
 int delete_user(int id);
+
+int line_input(int argc, int size, char* delim, char** args);
 
 #endif
