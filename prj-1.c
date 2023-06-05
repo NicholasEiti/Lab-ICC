@@ -89,7 +89,7 @@ int transfer_input(int *id_orig, int *id_dest, float *quant){
 	*id_dest = temp;
 
 	float ftemp = strtof(usr_in[2], &endptr);
-	if(ftemp <= 0 || *endptr != '\0'){
+	if(*endptr != '\0'){
 		fprintf(stderr, "Erro: saldo invalido\n");
 		return 0;
 	}

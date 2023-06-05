@@ -1,23 +1,23 @@
 #include "bank-utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
 unsigned int counter = 0;
 unsigned int id = 0;
 
-struct cliente lista_clientes[100];
+// struct cliente lista_clientes_dif[100];
+struct cliente *lista_clientes;
 
 const struct cliente cliente_vazio = { -1, "", 0, 0 };
 
 void initialize_list(){
-    for(int i = 0; i < 100; i++){
-        lista_clientes[i] = cliente_vazio;
-    }
+    lista_clientes = malloc(0);
 }
 
 void list_all_users(){
-    for (int i = 0; i < 100; i++){
+    for (int i = 0; i < counter; i++){
         if(lista_clientes[i].id != -1){
             printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", 
             lista_clientes[i].id, lista_clientes[i].nome, lista_clientes[i].idade, lista_clientes[i].saldo);
@@ -27,23 +27,26 @@ void list_all_users(){
 
 /// @brief Cria um usuário na lista
 int create_user(struct cliente novo_cliente){
-    lista_clientes[counter] = novo_cliente;
-    lista_clientes[counter].id = ++id;
+    // lista_clientes_dif[counter] = novo_cliente;
+    // lista_clientes_dif[counter].id = ++id;
+    lista_clientes = (struct cliente*)realloc(lista_clientes, (++counter)*sizeof(struct cliente));
+    lista_clientes[counter-1] = novo_cliente;
+    lista_clientes[counter-1].id = ++id;
     printf("Cliente inserido com id %d com sucesso\n", id);
-    counter++;
     return 1;
 }
 
 int create_users(struct cliente novos_clientes[], int size){
     printf("Clientes inseridos com id ");
+    lista_clientes = (struct cliente*)realloc(lista_clientes, (counter + size)*sizeof(struct cliente));
     for(int i = 0; i < size; i++){
-        lista_clientes[counter] = novos_clientes[i];
-        lista_clientes[counter].id = ++id;
+        counter++;
+        lista_clientes[counter-1] = novos_clientes[i];
+        lista_clientes[counter-1].id = ++id;
         printf("%d", id);
         if(i != size-1){
             printf(",");
         }
-        counter++;
     }
     printf(" com sucesso\n");
 }
@@ -53,7 +56,7 @@ int create_users(struct cliente novos_clientes[], int size){
 /// @param id identificação do cliente
 /// @return Retorna o usuário de acordo com id; Retorna um usuário vazio caso o usuário não seja encontrado
 struct cliente find_user(int id){
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < counter; i++){
         if(lista_clientes[i].id == -1) continue;
         if(lista_clientes[i].id == id){
             return lista_clientes[i];
@@ -65,7 +68,7 @@ struct cliente find_user(int id){
 }
 
 struct cliente *find_user_ptr(int id){
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < counter; i++){
         if(lista_clientes[i].id == -1) continue;
         if(lista_clientes[i].id == id){
             return &lista_clientes[i];
@@ -91,6 +94,12 @@ int transfer(int id_orig, int id_dest, float quant){
     struct cliente *dest = find_user_ptr(id_dest);
     if(dest == NULL){ return 0; }
 
+    if(quant <= 0){
+        errno = 0;
+        fprintf(stderr, "Saldo invalido!\n");
+        return 0;
+    }
+
     if(org->saldo < quant){
         errno = 0;
         fprintf(stderr, "Transferencia com saldo insuficiente!\n");
@@ -101,12 +110,14 @@ int transfer(int id_orig, int id_dest, float quant){
     return 1;
 }
 
-/// @brief Deleta usuário a partir do id; Esta função não remove a instância da lista, apenas esvazia ela
 int delete_user(int id){
     struct cliente *c = find_user_ptr(id);
     if(c == NULL){ return 0; }
+    for(int index = c - lista_clientes; index < counter; index++){
+        lista_clientes[index] = lista_clientes[index+1];
+    }
+    lista_clientes = realloc(lista_clientes, --counter);
     printf("Cliente com id %d deletado.", id);
-    *c = cliente_vazio;
     return 1;
 }
 
