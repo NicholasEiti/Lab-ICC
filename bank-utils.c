@@ -94,6 +94,12 @@ int transfer(int id_orig, int id_dest, float quant){
     struct cliente *dest = find_user_ptr(id_dest);
     if(dest == NULL){ return 0; }
 
+    if(org == dest){
+        errno = 0;
+        fprintf(stderr, "Transferencia entre mesmo usuario!\n");
+        return 0;
+    }
+
     if(quant <= 0){
         errno = 0;
         fprintf(stderr, "Saldo invalido!\n");
