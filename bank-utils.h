@@ -25,6 +25,8 @@ int transfer(int id_orig, int id_dest, float quant);
 
 int delete_user(int id);
 
-int line_input(int argc, int size, char* delim, char** args);
+int client_input(struct cliente *new_cliente);
+
+int transfer_input(int *id_orig, int *id_dest, float *quant);
 
 #endif

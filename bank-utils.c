@@ -126,30 +126,3 @@ int delete_user(int id){
     printf("Cliente com id %d deletado.", id);
     return 1;
 }
-
-int line_input(int argc, int size, char* delim, char** args){
-    char usr_in[size];
-	fgets(usr_in, size, stdin);
-	usr_in[strcspn(usr_in, "\n")] = 0;
-	errno = 0;
-
-	char* token;
-	char* rest = usr_in;
-	
-	token = strtok(rest, delim);
-	int i = 0;
-	while (token != NULL){
-        if(i >= argc){
-            fprintf(stderr, "Erro: Excesso de argumentos!\n");
-            return 0;
-        }
-        args[i] = token;
-		token = strtok(NULL, delim);
-		i++;
-	}
-	if(i < argc){
-		fprintf(stderr, "Erro: Falta de dados!\n");
-		return 0;
-	}
-	return 1;
-}

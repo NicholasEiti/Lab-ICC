@@ -32,72 +32,6 @@ void print_help(){
 	puts("Remove cliente com id <id>\n");
 }
 
-/// @brief Cuida de toda a leitura referente ao cadastro de usuário
-int client_input(struct cliente *new_cliente){
-	char** usr_in;
-	usr_in = malloc(NOME_LEN+20);
-	if(!(line_input(3, NOME_LEN+20, ",", usr_in))){
-		return 0;
-	}
-	
-	strcpy(new_cliente->nome, usr_in[0]);
-
-	char *endptr;
-	int temp = strtol(usr_in[1], &endptr, 10);
-	// Verificação de validade da idade (quando o endptr não é '\0', 
-	// há caracteres que não tem valor numérico
-	if(temp < 0 || *endptr != '\0'){
-		fprintf(stderr, "Erro: idade invalida\n");
-		return 0;
-	}
-	new_cliente->idade = (unsigned int)temp;
-
-	new_cliente->saldo = strtof(usr_in[2], &endptr);
-	if(new_cliente->saldo < 0 || *endptr != '\0'){
-		new_cliente->saldo = 0;
-		fprintf(stderr, "Erro: saldo invalido\n");
-		return 0;
-	}
-	return 1;
-}
-
-int transfer_input(int *id_orig, int *id_dest, float *quant){
-	char** usr_in;
-	usr_in = malloc(30);
-	if(!(line_input(3, 30, " ", usr_in))){
-		return 0;
-	}
-
-	char* endptr;
-
-	int temp = strtol(usr_in[0], &endptr, 10);
-	// Verificação de validade do id (quando o endptr não é '\0', 
-	// há caracteres que não tem valor numérico
-	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: id de origem invalido\n");
-		return 0;
-	}
-	*id_orig = temp;
-
-	temp = strtol(usr_in[1], &endptr, 10);
-	// Verificação de validade da idade (quando o endptr não é '\0', 
-	// há caracteres que não tem valor numérico
-	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: id de destino invalido\n");
-		return 0;
-	}		
-	*id_dest = temp;
-
-	float ftemp = strtof(usr_in[2], &endptr);
-	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: saldo invalido\n");
-		return 0;
-	}
-	*quant = ftemp;
-	
-	return 1;
-}
-
 int main(int argc, char **argv[]){
 	setlocale(LC_ALL,"pt-BR.UTF-8");
 	print_menu();
@@ -115,7 +49,6 @@ int main(int argc, char **argv[]){
 		getchar();
 
 		int n_in;
-		char **in;
 		switch(op){
 			case '0':
 				// Sair e criar arquivo .txt
