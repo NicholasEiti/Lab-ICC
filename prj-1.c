@@ -95,7 +95,7 @@ int main(int argc, char **argv[]){
 				struct cliente c;
 				c = find_user(n_in);
 				if(c.id != -1){
-					printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", c.id, c.nome, c.idade, c.saldo);
+					print_user_data(c);
 				}
 				break;
 			case '4':

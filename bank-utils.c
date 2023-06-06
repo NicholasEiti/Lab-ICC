@@ -16,11 +16,14 @@ void initialize_list(){
     lista_clientes = malloc(0);
 }
 
+void print_user_data(struct cliente c){
+    printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", c.id, c.nome, c.idade, c.saldo);
+}
+
 void list_all_users(){
     for (int i = 0; i < counter; i++){
         if(lista_clientes[i].id != -1){
-            printf("ID: %d | Nome: %s | Idade: %u | Saldo: R$%.2f\n", 
-            lista_clientes[i].id, lista_clientes[i].nome, lista_clientes[i].idade, lista_clientes[i].saldo);
+            print_user_data(lista_clientes[i]);
         }
     }
 }
@@ -37,6 +40,7 @@ int create_user(struct cliente novo_cliente){
 }
 
 int create_users(struct cliente novos_clientes[], int size){
+    if(size < 1){ return 0; }
     printf("Clientes inseridos com id ");
     lista_clientes = (struct cliente*)realloc(lista_clientes, (counter + size)*sizeof(struct cliente));
     for(int i = 0; i < size; i++){
@@ -99,18 +103,17 @@ int transfer(int id_orig, int id_dest, float quant){
         fprintf(stderr, "Transferencia entre mesmo usuario!\n");
         return 0;
     }
-
-    if(quant <= 0){
+    else if(quant <= 0){
         errno = 0;
         fprintf(stderr, "Saldo invalido!\n");
         return 0;
     }
-
-    if(org->saldo < quant){
+    else if(org->saldo < quant){
         errno = 0;
         fprintf(stderr, "Transferencia com saldo insuficiente!\n");
         return 0;
     }
+    
     org->saldo -= quant;
     dest->saldo += quant;
     return 1;
