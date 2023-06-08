@@ -17,6 +17,8 @@ void list_all_users();
 
 void print_user_data(struct cliente c);
 
+void report();
+
 int create_user(struct cliente novo_cliente);
 
 int create_users(struct cliente novos_clientes[], int size);

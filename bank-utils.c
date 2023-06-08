@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <errno.h>
 
 unsigned int counter = 0;
 unsigned int id = 0;
 
-// struct cliente lista_clientes_dif[100];
 struct cliente *lista_clientes;
 
 const struct cliente cliente_vazio = { -1, "", 0, 0 };
@@ -26,6 +26,22 @@ void list_all_users(){
             print_user_data(lista_clientes[i]);
         }
     }
+}
+
+void report(){
+    FILE *report;
+    char filename[50];
+    time_t curtime = time(NULL);
+    struct tm *tm_struct = localtime(&curtime);
+    sprintf(filename, "%d-%d-%d-report.csv\n", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday);
+    report = fopen(filename, "w+");
+    fprintf(report, "ID,Nome,Idade,Saldo\n");
+    for (int i = 0; i < counter; i++){
+        struct cliente c = lista_clientes[i];
+        fprintf(report, "%d,%s,%u,%.2f\n", c.id, c.nome, c.idade, c.saldo);
+    }
+    free(lista_clientes);
+    fclose(report);
 }
 
 /// @brief Cria um usuário na lista

@@ -52,7 +52,8 @@ int main(int argc, char **argv[]){
 		switch(op){
 			case '0':
 				// Sair e criar arquivo .txt
-				puts("Saindo do sistema e criando um arquivo .txt");
+				puts("Saindo do sistema e criando relatorio");
+				report();
 				return 0;
 			case '1':
 				printf("");
@@ -69,7 +70,7 @@ int main(int argc, char **argv[]){
 					break;
 				}
 				getchar();
-
+			
 				struct cliente *new_clientes;
 				new_clientes = (struct cliente *)malloc(n_in*sizeof(struct cliente));
 
