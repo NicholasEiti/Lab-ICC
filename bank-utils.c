@@ -4,13 +4,16 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <uuid/uuid.h>
+
+#define UUIDTEXTSIZE (sizeof(uuid_t) * 2) + 5
 
 unsigned int counter = 0;
 unsigned int id = 0;
 
 struct cliente *lista_clientes;
 
-const struct cliente cliente_vazio = { -1, "", 0, 0 };
+struct cliente cliente_vazio = { -1, "", 0, 0 };
 
 void initialize_list(){
     lista_clientes = malloc(0);
@@ -32,7 +35,7 @@ void report(){
     FILE *report;
     char filename[50];
 
-    // Criando o nome do arquivo (de acordo com a data)
+    // Criando o nome do arquivo (de acordo com tempo)
     time_t curtime = time(NULL);
     struct tm *tm_struct = localtime(&curtime);
     sprintf(filename, "%d-%.2d-%.2d %.2d-%.2d-%.2d report.csv\n", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday, 
@@ -49,17 +52,24 @@ void report(){
     fclose(report);
 }
 
-/// @brief Cria um usuário na lista
+// Cria um usuário na lista de clientes
 int create_user(struct cliente novo_cliente){
-    // lista_clientes_dif[counter] = novo_cliente;
-    // lista_clientes_dif[counter].id = ++id;
     lista_clientes = (struct cliente*)realloc(lista_clientes, (++counter)*sizeof(struct cliente));
     lista_clientes[counter-1] = novo_cliente;
     lista_clientes[counter-1].id = ++id;
+
+    uuid_t myuuid;
+    uuid_generate_random(myuuid);
+    char uuid_text[UUIDTEXTSIZE];
+
+    uuid_unparse(myuuid, uuid_text);
+    printf("%s\n", uuid_text);
     printf("Cliente inserido com id %d com sucesso\n", id);
     return 1;
 }
 
+
+// Cria usuários passados na lista de clientes
 int create_users(struct cliente novos_clientes[], int size){
     if(size < 1){ return 0; }
     printf("Clientes inseridos com id ");
@@ -74,12 +84,10 @@ int create_users(struct cliente novos_clientes[], int size){
         }
     }
     printf(" com sucesso\n");
+    return 1;
 }
 
-/// @brief Acha usuário a partir do id
-/// @param lista a lista de clientes
-/// @param id identificação do cliente
-/// @return Retorna o usuário de acordo com id; Retorna um usuário vazio caso o usuário não seja encontrado
+// Acha usuário a partir do id
 struct cliente find_user(int id){
     for(int i = 0; i < counter; i++){
         if(lista_clientes[i].id == -1) continue;

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "stdio.h": "c",
-        "bank-utils.h": "c"
+        "bank-utils.h": "c",
+        "uuid.h": "c"
     }
 }
