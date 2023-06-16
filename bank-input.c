@@ -7,6 +7,7 @@
 int line_input(int argc, int size, char* delim, char** args){
     char usr_in[size];
 	fgets(usr_in, size, stdin);
+	setbuf(stdin, NULL);
 	usr_in[strcspn(usr_in, "\n")] = 0;
 	errno = 0;
 

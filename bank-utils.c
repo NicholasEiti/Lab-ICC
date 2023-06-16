@@ -31,11 +31,16 @@ void list_all_users(){
 void report(){
     FILE *report;
     char filename[50];
+
+    // Criando o nome do arquivo (de acordo com a data)
     time_t curtime = time(NULL);
     struct tm *tm_struct = localtime(&curtime);
-    sprintf(filename, "%d-%d-%d-report.csv\n", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday);
+    sprintf(filename, "%d-%.2d-%.2d %.2d-%.2d-%.2d report.csv\n", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday, 
+    tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec);
     report = fopen(filename, "w+");
-    fprintf(report, "ID,Nome,Idade,Saldo\n");
+
+    // Cabeçalho do arquivo
+    fprintf(report, "ID,Nome,Idade,Saldo\n"); 
     for (int i = 0; i < counter; i++){
         struct cliente c = lista_clientes[i];
         fprintf(report, "%d,%s,%u,%.2f\n", c.id, c.nome, c.idade, c.saldo);
@@ -103,8 +108,7 @@ struct cliente *find_user_ptr(int id){
 /// @param id_orig id da origem da transferência
 /// @param id_dest id do alvo da transferência
 /// @param quant valor da transferência
-/// @return Retorna 1 caso a transferência tenha sucesso; retorna 0 caso um dos usuários não seja encontrado; 
-/// retorna -1 caso a transferência seja inválida por outro motivo
+/// @return Retorna 1 caso a transferência tenha sucesso; retorna 0 caso a transferência tenha falhado
 int transfer(int id_orig, int id_dest, float quant){
     // Achar o usuário id_orig
     struct cliente *org = find_user_ptr(id_orig);
@@ -114,6 +118,7 @@ int transfer(int id_orig, int id_dest, float quant){
     struct cliente *dest = find_user_ptr(id_dest);
     if(dest == NULL){ return 0; }
 
+    // Verificação de erros
     if(org == dest){
         errno = 0;
         fprintf(stderr, "Transferencia entre mesmo usuario!\n");
@@ -130,15 +135,18 @@ int transfer(int id_orig, int id_dest, float quant){
         return 0;
     }
     
+    // Transferência
     org->saldo -= quant;
     dest->saldo += quant;
     return 1;
 }
 
 int delete_user(int id){
-    struct cliente *c = find_user_ptr(id);
-    if(c == NULL){ return 0; }
-    for(int index = c - lista_clientes; index < counter; index++){
+    struct cliente *cp = find_user_ptr(id);
+    if(cp == NULL){ return 0; }
+    
+    // Deslocar os itens não deletados
+    for(int index = cp - lista_clientes; index < counter-1; index++){
         lista_clientes[index] = lista_clientes[index+1];
     }
     lista_clientes = realloc(lista_clientes, (--counter)*sizeof(struct cliente));

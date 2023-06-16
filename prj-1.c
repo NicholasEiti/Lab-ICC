@@ -39,15 +39,17 @@ int main(int argc, char **argv[]){
 	initialize_list();
 
 	while(1){
-		char op;
 		loopstart:
+		char op, aux;
 		fputs("\nInsira uma opcao: ", stdout);
 		op = getchar();
-		if(op == '\n'){
-			continue;
+		aux = getchar();
+		if(aux != '\n'){
+			while(aux != '\n'){
+				aux = getchar();
+			}
+			op = '\0';
 		}
-		getchar();
-
 		int n_in;
 		switch(op){
 			case '0':
@@ -56,7 +58,6 @@ int main(int argc, char **argv[]){
 				report();
 				return 0;
 			case '1':
-				printf("");
 				struct cliente new_cliente;
 				
 				if(client_input(&new_cliente)){
@@ -66,10 +67,11 @@ int main(int argc, char **argv[]){
 			case '2':
 				if(!scanf("%d", &n_in)){
 					errno = 0;
-					fprintf(stdin, "Valor invalido!\n");
+					fprintf(stderr, "Valor invalido!\n");
+					setbuf(stdin, NULL);
 					break;
 				}
-				getchar();
+				setbuf(stdin, NULL);
 			
 				struct cliente *new_clientes;
 				new_clientes = (struct cliente *)malloc(n_in*sizeof(struct cliente));
@@ -92,7 +94,7 @@ int main(int argc, char **argv[]){
 					fprintf(stderr, "Valor invalido!\n");
 					break;
 				}
-				getchar();
+				setbuf(stdin, NULL);
 				struct cliente c;
 				c = find_user(n_in);
 				if(c.id != -1){
@@ -100,7 +102,6 @@ int main(int argc, char **argv[]){
 				}
 				break;
 			case '4':
-				printf("");
 				int id_orig;
 				int id_dest;
 				float quant;
@@ -120,7 +121,7 @@ int main(int argc, char **argv[]){
 					fprintf(stderr, "Valor invalido!\n");
 					break;
 				}
-				getchar();
+				setbuf(stdin, NULL);
 				delete_user(n_in);
 				break;
 			case '6':
