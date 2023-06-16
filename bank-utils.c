@@ -141,7 +141,7 @@ int delete_user(int id){
     for(int index = c - lista_clientes; index < counter; index++){
         lista_clientes[index] = lista_clientes[index+1];
     }
-    lista_clientes = realloc(lista_clientes, --counter);
+    lista_clientes = realloc(lista_clientes, (--counter)*sizeof(struct cliente));
     printf("Cliente com id %d deletado.", id);
     return 1;
 }

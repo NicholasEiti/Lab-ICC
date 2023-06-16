@@ -17,6 +17,7 @@ int line_input(int argc, int size, char* delim, char** args){
 	int i = 0;
 	while (token != NULL){
         if(i >= argc){
+			errno = 7;
             fprintf(stderr, "Erro: Excesso de argumentos!\n");
             return 0;
         }
@@ -39,6 +40,10 @@ int client_input(struct cliente *new_cliente){
 		return 0;
 	}
 	
+	if(strlen(usr_in[0]) > NOME_LEN){
+		errno = 0;
+		fprintf(stderr, "Aviso: nome muito grande!");
+	}
 	strcpy(new_cliente->nome, usr_in[0]);
 
 	char *endptr;
