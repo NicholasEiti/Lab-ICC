@@ -5,9 +5,12 @@
 #include <errno.h>
 
 int line_input(int argc, int size, char* delim, char** args){
-    char usr_in[size];
-	fgets(usr_in, size, stdin);
+    char *usr_in = NULL;
+	size_t buffer_size = 0;
+
+	getline(&usr_in, &buffer_size, stdin);
 	setbuf(stdin, NULL);
+	
 	usr_in[strcspn(usr_in, "\n")] = 0;
 	errno = 0;
 
@@ -30,6 +33,8 @@ int line_input(int argc, int size, char* delim, char** args){
 		fprintf(stderr, "Erro: Falta de dados!\n");
 		return 0;
 	}
+
+	
 	return 1;
 }
 
@@ -39,10 +44,10 @@ int client_input(struct cliente *new_cliente){
 	if(!(line_input(3, NOME_LEN+20, ",", usr_in))){
 		return 0;
 	}
-	
+
 	if(strlen(usr_in[0]) > NOME_LEN){
-		errno = 0;
-		fprintf(stderr, "Aviso: nome muito grande!");
+		fprintf(stderr, "Erro: nome deve ter no maximo 100 caracteres");
+		return 0;
 	}
 	strcpy(new_cliente->nome, usr_in[0]);
 

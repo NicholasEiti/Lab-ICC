@@ -3,8 +3,7 @@
 
 #define NOME_LEN 100
 
-struct cliente
-{
+struct cliente{
     int id;
     char nome[100];
     unsigned int idade;
