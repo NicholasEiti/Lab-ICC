@@ -33,7 +33,6 @@ int line_input(int argc, int size, char* delim, char** args){
 	return 1;
 }
 
-/// @brief Cuida de toda a leitura referente ao cadastro de usuário
 int client_input(struct cliente *new_cliente){
 	char** usr_in;
 	usr_in = malloc(NOME_LEN+20);
@@ -66,7 +65,6 @@ int client_input(struct cliente *new_cliente){
 	return 1;
 }
 
-/// @brief Cuida de toda a leitura referente a transferências entre usuários
 int transfer_input(int *id_orig, int *id_dest, float *quant){
 	char** usr_in;
 	usr_in = malloc(30 * sizeof(char));

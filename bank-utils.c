@@ -38,7 +38,7 @@ void report(){
     // Criando o nome do arquivo (de acordo com tempo)
     time_t curtime = time(NULL);
     struct tm *tm_struct = localtime(&curtime);
-    sprintf(filename, "%d-%.2d-%.2d %.2d-%.2d-%.2d report.csv\n", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday, 
+    sprintf(filename, "%d-%.2d-%.2d %.2d-%.2d-%.2d report.csv", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday, 
     tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec);
     report = fopen(filename, "w+");
 
@@ -52,7 +52,6 @@ void report(){
     fclose(report);
 }
 
-// Cria um usuário na lista de clientes
 int create_user(struct cliente novo_cliente){
     lista_clientes = (struct cliente*)realloc(lista_clientes, (++counter)*sizeof(struct cliente));
     lista_clientes[counter-1] = novo_cliente;
@@ -68,8 +67,6 @@ int create_user(struct cliente novo_cliente){
     return 1;
 }
 
-
-// Cria usuários passados na lista de clientes
 int create_users(struct cliente novos_clientes[], int size){
     if(size < 1){ return 0; }
     printf("Clientes inseridos com id ");
@@ -87,7 +84,7 @@ int create_users(struct cliente novos_clientes[], int size){
     return 1;
 }
 
-// Acha usuário a partir do id
+
 struct cliente find_user(int id){
     for(int i = 0; i < counter; i++){
         if(lista_clientes[i].id == -1) continue;
@@ -112,11 +109,6 @@ struct cliente *find_user_ptr(int id){
     return NULL;
 }
 
-/// @brief Transferência entre dois usuários
-/// @param id_orig id da origem da transferência
-/// @param id_dest id do alvo da transferência
-/// @param quant valor da transferência
-/// @return Retorna 1 caso a transferência tenha sucesso; retorna 0 caso a transferência tenha falhado
 int transfer(int id_orig, int id_dest, float quant){
     // Achar o usuário id_orig
     struct cliente *org = find_user_ptr(id_orig);
