@@ -39,7 +39,6 @@ int main(int argc, char *argv[]){
 	initialize_list();
 
 	while(1){
-		loopstart:
 		char op, aux;
 		fputs("\nInsira uma opcao: ", stdout);
 		op = getchar();
@@ -51,13 +50,20 @@ int main(int argc, char *argv[]){
 			op = '\0';
 		}
 		int n_in;
+
+		int id_orig;
+		int id_dest;
+		float quant;
+
+		struct cliente new_cliente;
+
 		switch(op){
 			case '0': // Criar relatório
 				puts("Saindo do sistema e criando relatorio");
 				report();
 				return 0;
 			case '1': // Criar cliente
-				struct cliente new_cliente;
+				
 				
 				if(client_input(&new_cliente)){
 					create_user(new_cliente);
@@ -83,9 +89,6 @@ int main(int argc, char *argv[]){
 					if(client_input(&new_cliente)){
 						new_clientes[i] = new_cliente;
 					}
-					else{
-						goto loopstart;
-					}
 				}
 
 				create_users(new_clientes, n_in);
@@ -106,9 +109,6 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '4': // Transferência entre clientes
-				int id_orig;
-				int id_dest;
-				float quant;
 				if(transfer_input(&id_orig, &id_dest, &quant)){
 					if(transfer(id_orig, id_dest, quant)){
 						puts("Transferencia realizada com sucesso.");
