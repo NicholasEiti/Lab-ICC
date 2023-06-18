@@ -13,6 +13,7 @@ void print_menu(){
 	puts("3- Buscar um cliente por id");
 	puts("4- Transferir entre clientes");
 	puts("5- Remover clientes");
+	puts("6- Listar todos os clientes");
 	puts("h- Exibir do guia de ajuda");
 }
 
@@ -30,6 +31,7 @@ void print_help(){
 	puts("Transferência entre cliente <id de origem> para <id de destino>");
 	puts("5- <id>");
 	puts("Remove cliente com id <id>");
+	puts("6- Lista toda a lista de clientes");
 }
 
 int main(int argc, char *argv[]){
@@ -39,6 +41,7 @@ int main(int argc, char *argv[]){
 	initialize_list();
 
 	while(1){
+		loopstart:
 		char op, aux;
 		fputs("\nInsira uma opcao: ", stdout);
 		op = getchar();
@@ -89,8 +92,11 @@ int main(int argc, char *argv[]){
 					if(client_input(&new_cliente)){
 						new_clientes[i] = new_cliente;
 					}
+					else{
+						free(new_clientes);
+						goto loopstart;
+					}
 				}
-
 				create_users(new_clientes, n_in);
 				free(new_clientes);
 				break;
@@ -104,7 +110,7 @@ int main(int argc, char *argv[]){
 				setbuf(stdin, NULL);
 				struct cliente c;
 				c = find_user(n_in);
-				if(c.id != cliente_vazio.id){
+				if(strcmp(c.nome, "")){
 					print_user_data(c);
 				}
 				break;

@@ -1,10 +1,13 @@
+#include <uuid/uuid.h>
+
 #ifndef BANK_UTILS_
 #define BANK_UTILS_
 
 #define NOME_LEN 100
+#define SHA1NAMESPACE "aa9b68b5-91fd-4a2d-b3e2-9a2fe7dd55fb" // Salt para SHA1
 
 struct cliente{
-    int id;
+    uuid_t id;
     char nome[100];
     unsigned int idade;
     float saldo;
@@ -31,13 +34,13 @@ int create_user(struct cliente novo_cliente);
 int create_users(struct cliente novos_clientes[], int size);
 
 // Retorna o usuário com o id do argumento; retorna cliente_vazio caso o cliente não seja encontrado
-struct cliente find_user(int id);
+struct cliente find_user(unsigned int id);
 
 // Realiza a transferência entre dois usuários
-int transfer(int id_orig, int id_dest, float quant);
+int transfer(unsigned int id_orig, unsigned int id_dest, float quant);
 
 // Deleta um usuário com o id do argumento
-int delete_user(int id);
+int delete_user(unsigned int trg_id);
 
 // Processa linha dos dados de criaçao de cliente
 int client_input(struct cliente *new_cliente);
