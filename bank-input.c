@@ -14,7 +14,7 @@ int line_input(FILE* stream, int argc, int size, char* delim, char** args){
 	usr_in[strcspn(usr_in, "\n")] = 0;
 
 	if(strlen(usr_in) > size){
-		fprintf(stderr, "Linha muito grande!");
+		fputs("Linha muito grande!\n", stderr);
 		return 0;
 	}
 
@@ -28,7 +28,7 @@ int line_input(FILE* stream, int argc, int size, char* delim, char** args){
 	while (token != NULL){
         if(i >= argc){
 			errno = 7;
-            fprintf(stderr, "Erro: Excesso de argumentos!\n");
+            fputs("Erro: Excesso de argumentos!\n", stderr);
             return 0;
         }
         args[i] = token;
@@ -36,7 +36,7 @@ int line_input(FILE* stream, int argc, int size, char* delim, char** args){
 		i++;
 	}
 	if(i < argc){
-		fprintf(stderr, "Erro: Falta de dados!\n");
+		fputs("Erro: Falta de dados!\n", stderr);
 		return 0;
 	}
 
@@ -52,7 +52,7 @@ int client_input(struct cliente *new_cliente){
 	}
 
 	if(strlen(usr_in[0]) > NOME_LEN){
-		fprintf(stderr, "Erro: nome deve ter no maximo 100 caracteres");
+		fputs("Erro: nome deve ter no maximo 100 caracteres\n", stderr);
 		return 0;
 	}
 	strcpy(new_cliente->nome, usr_in[0]);
@@ -62,7 +62,7 @@ int client_input(struct cliente *new_cliente){
 	// Verificação de validade da idade (quando o endptr não é '\0', 
 	// há caracteres que não tem valor numérico
 	if(temp < 0 || *endptr != '\0'){
-		fprintf(stderr, "Erro: idade invalida\n");
+		fputs("Erro: idade invalida\n", stderr);
 		return 0;
 	}
 	new_cliente->idade = (unsigned int)temp;
@@ -70,7 +70,7 @@ int client_input(struct cliente *new_cliente){
 	new_cliente->saldo = strtof(usr_in[2], &endptr);
 	if(new_cliente->saldo < 0 || *endptr != '\0'){
 		new_cliente->saldo = 0;
-		fprintf(stderr, "Erro: saldo invalido\n");
+		fputs("Erro: saldo invalido\n", stderr);
 		return 0;
 	}
 	return 1;
@@ -78,7 +78,7 @@ int client_input(struct cliente *new_cliente){
 
 int client_data(char *nome, char *idade, char *saldo, struct cliente *new_cliente){
 	if(strlen(nome) > NOME_LEN){
-		fprintf(stderr, "Erro: nome deve ter no maximo 100 caracteres");
+		fputs("Erro: nome deve ter no maximo 100 caracteres\n", stderr);
 		return 0;
 	}
 	strcpy(new_cliente->nome, nome);
@@ -88,7 +88,7 @@ int client_data(char *nome, char *idade, char *saldo, struct cliente *new_client
 	// Verificação de validade da idade (quando o endptr não é '\0', 
 	// há caracteres que não tem valor numérico
 	if(temp < 0 || *endptr != '\0'){
-		fprintf(stderr, "Erro: idade invalida\n");
+		fputs("Erro: idade invalida\n", stderr);
 		return 0;
 	}
 	new_cliente->idade = (unsigned int)temp;
@@ -96,7 +96,7 @@ int client_data(char *nome, char *idade, char *saldo, struct cliente *new_client
 	new_cliente->saldo = strtof(saldo, &endptr);
 	if(new_cliente->saldo < 0 || *endptr != '\0'){
 		new_cliente->saldo = 0;
-		fprintf(stderr, "Erro: saldo invalido\n");
+		fputs("Erro: saldo invalido\n", stderr);
 		return 0;
 	}
 	return 1;
@@ -111,14 +111,14 @@ int transfer_input(char *id_orig, char *id_dest, float *quant){
 	}
 
 	if(strlen(usr_in[0]) != 6){
-		fprintf(stderr, "Erro: ID de origem invalido!\n");
+		fputs("Erro: ID de origem invalido!\n", stderr);
 		return 0;
 	}
 	strcpy(id_orig, usr_in[0]);
 	id_orig = usr_in[0];
 
 	if(strlen(usr_in[1]) != 6){
-		fprintf(stderr, "Erro: ID de destino invalido!\n");
+		fputs("Erro: ID de destino invalido!\n", stderr);
 		free(usr_in);
 		return 0;
 	}
@@ -129,7 +129,7 @@ int transfer_input(char *id_orig, char *id_dest, float *quant){
 
 	float ftemp = strtof(usr_in[2], &endptr);
 	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: saldo invalido\n");
+		fputs("Erro: saldo invalido!\n", stderr);
 		free(usr_in);
 		return 0;
 	}

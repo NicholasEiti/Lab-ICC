@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
 			}
 			op = '\0';
 		}
-		int n_in;
 
 		char *id_orig = malloc(6);
 		char *id_dest = malloc(6);
@@ -83,14 +82,14 @@ int main(int argc, char *argv[]){
 				usr_in[strcspn(usr_in, "\n")] = 0;
 				
 				char *endptr;
-				int temp = strtol(usr_in, &endptr, 10);
+				int n_in = strtol(usr_in, &endptr, 10);
 				// Verificação de validade da idade (quando o endptr não é '\0', 
 				// há caracteres que não tem valor numérico
 				if(*endptr != '\0'){
-					fprintf(stderr, "Erro: valor invalido\n");
+					fputs("Erro: valor invalido!\n", stderr);
 					break;
 				}
-				n_in = temp;
+
 				// Inicialização do array dos novos clientes a serem adicionados
 				struct cliente *new_clientes;
 				new_clientes = (struct cliente *)malloc(n_in*sizeof(struct cliente));
@@ -115,7 +114,7 @@ int main(int argc, char *argv[]){
 				setbuf(stdin, NULL);
 				usr_in[strcspn(usr_in, "\n")] = 0;
 				if(strlen(usr_in) != 6){
-					fprintf(stderr, "Erro: ID invalido!\n");
+					fputs("Erro: ID invalido!\n", stderr);
 					break;
 				}
 
@@ -132,7 +131,7 @@ int main(int argc, char *argv[]){
 					}
 					else{
 						errno = 0;
-        				fprintf(stderr, "Transferencia cancelada.\n");
+        				fputs("Transferencia cancelada.\n", stderr);
 					}
 				}
 				break;
@@ -141,7 +140,7 @@ int main(int argc, char *argv[]){
 				setbuf(stdin, NULL);
 				usr_in[strcspn(usr_in, "\n")] = 0;
 				if(strlen(usr_in) != 6){
-					fprintf(stderr, "Erro: ID invalido!\n");
+					fputs("Erro: ID invalido!\n", stderr);
 					break;
 				}
 
@@ -155,7 +154,7 @@ int main(int argc, char *argv[]){
 				break;
 			default:
 				errno = 0;
-				fprintf(stderr, "Erro: Opcao inserida invalida!\n");
+				fputs("Erro: Opcao inserida invalida!\n", stderr);
 				break;
 		}
 	}

@@ -53,7 +53,7 @@ void report(){
     report = fopen(filename, "w+");
 
     // Cabeçalho do arquivo
-    fprintf(report, "ID,Nome,Idade,Saldo\n"); 
+    fputs("ID,Nome,Idade,Saldo\n", report); 
     for (int i = 0; i < counter; i++){
         struct cliente c = lista_clientes[i];
         char uuid_text[UUID_STR_LEN];
@@ -75,12 +75,14 @@ int load_report(char* filename){
         return 0;
     }
 
+    puts("Carregando relatorio...");
+
     char *output;
     size_t buffer_size = 0;
     getline(&output, &buffer_size, r_report);
 
     if(strcmp(output, "ID,Nome,Idade,Saldo\n")){
-        fprintf(stderr, "Arquivo nao compativel\n");
+        fputs("Arquivo nao compativel\n", stderr);
         return 0;
     }
     
@@ -89,7 +91,7 @@ int load_report(char* filename){
         char** usr_in;
         usr_in = malloc(NOME_LEN+40);
         if(!(line_input(r_report, 4, NOME_LEN+40, ",", usr_in))){
-            fprintf(stderr, "Erro: linha em formato incompatível\n");
+            fputs("Erro: linha em formato incompatível\n", stderr);
             return 0;
         }
 
@@ -99,18 +101,18 @@ int load_report(char* filename){
             char *endptr;
             unsigned int temp = strtoul(usr_in[2], &endptr, 10);
             if(*endptr != '\0'){
-                fprintf(stderr, "Erro: id inicial invalido\n");
+                fputs("Erro: id inicial invalido\n", stderr);
                 return 0;
             }
             id = temp;
 
             temp = strtoul(usr_in[3], &endptr, 10);
             if(*endptr != '\0'){
-                fprintf(stderr, "Erro: counter inicial invalido\n");
+                fputs("Erro: counter inicial invalido\n", stderr);
                 return 0;
             }
             counter = temp;
-            
+            puts("Relatorio carregado com sucesso.\n");
             return 1;
         }
 
@@ -123,15 +125,13 @@ int load_report(char* filename){
             uuid_copy(new_cliente.id, new_uuid);
             lista_clientes = (struct cliente*)realloc(lista_clientes, (++counter)*sizeof(struct cliente));
             lista_clientes[counter-1] = new_cliente;
-
-            puts("Cliente inserido com sucesso");
         }
         else{
-            fprintf(stderr, "Erro na leitura da linha\n");
+            fputs("Erro na leitura da linha\n", stderr);
             return 0;
         }
     }
-    fprintf(stderr, "Final do arquivo invalido\n");
+    fputs("Final do arquivo invalido\n", stderr);
     return 0;
 }
 
@@ -216,17 +216,17 @@ int transfer(char id_orig[6], char id_dest[6], float quant){
     // Verificação de erros
     if(org == dest){
         errno = 0;
-        fprintf(stderr, "Transferencia entre mesmo usuario!\n");
+        fputs("Transferencia entre mesmo usuario!\n", stderr);
         return 0;
     }
     else if(quant <= 0){
         errno = 0;
-        fprintf(stderr, "Saldo invalido!\n");
+        fputs("Saldo invalido!\n", stderr);
         return 0;
     }
     else if(org->saldo < quant){
         errno = 0;
-        fprintf(stderr, "Transferencia com saldo insuficiente!\n");
+        fputs("Transferencia com saldo insuficiente!\n", stderr);
         return 0;
     }
     
