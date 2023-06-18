@@ -17,7 +17,7 @@ struct cliente cliente_vazio = { "\0", "", 0, 0 };
 void initialize_list(){
     lista_clientes = malloc(0);
     uuid_t namespace_uuid;
-    uuid_generate_random(namespace_uuid);
+    uuid_generate(namespace_uuid);
     uuid_unparse(namespace_uuid, sha1namespace);
 }
 
@@ -176,32 +176,23 @@ int create_users(struct cliente novos_clientes[], int size){
 }
 
 
-struct cliente find_user(unsigned int trg_id){
-    char idtxt[6];
-    sprintf(idtxt, "%.6u", trg_id);
-
+struct cliente find_user(char trg_id[6]){
     uuid_t uuid;
-    create_uuid(uuid, idtxt);
-    char* teste;
-    // uuid_unparse(uuid, teste);
-    // printf("%s\n", teste);
-    // printf("%u\n", counter);
+    create_uuid(uuid, trg_id);
+
     for(int i = 0; i < counter; i++){
         if(!uuid_compare(uuid, lista_clientes[i].id)){
             return lista_clientes[i];
         }
     }
     errno = 0;
-    fprintf(stderr, "Cliente com id %s inesistente!\n", idtxt);
+    fprintf(stderr, "Cliente com id %s inesistente!\n", trg_id);
     return cliente_vazio;
 }
 
-struct cliente *find_user_ptr(unsigned int trg_id){
-    char idtxt[6];
-    sprintf(idtxt, "%.6u", trg_id);
-
+struct cliente *find_user_ptr(char trg_id[6]){
     uuid_t uuid;
-    create_uuid(uuid, idtxt);
+    create_uuid(uuid, trg_id);
 
     for(int i = 0; i < counter; i++){
         if(!uuid_compare(uuid, lista_clientes[i].id)){
@@ -209,11 +200,11 @@ struct cliente *find_user_ptr(unsigned int trg_id){
         }
     }
     errno = 0;
-    fprintf(stderr, "Cliente com id %s inesistente!\n", idtxt);
+    fprintf(stderr, "Cliente com id %s inesistente!\n", trg_id);
     return NULL;
 }
 
-int transfer(unsigned int id_orig, unsigned int id_dest, float quant){
+int transfer(char id_orig[6], char id_dest[6], float quant){
     // Achar o usuário id_orig
     struct cliente *org = find_user_ptr(id_orig);
     if(org == NULL){ return 0; }
@@ -245,7 +236,7 @@ int transfer(unsigned int id_orig, unsigned int id_dest, float quant){
     return 1;
 }
 
-int delete_user(unsigned int trg_id){
+int delete_user(char trg_id[6]){
     struct cliente *cp = find_user_ptr(trg_id);
     if(cp == NULL){ return 0; }
     
@@ -254,6 +245,6 @@ int delete_user(unsigned int trg_id){
         lista_clientes[index] = lista_clientes[index+1];
     }
     lista_clientes = realloc(lista_clientes, (--counter)*sizeof(struct cliente));
-    printf("Cliente com id %d deletado.", trg_id);
+    printf("Cliente com id %s deletado.\n", trg_id);
     return 1;
 }

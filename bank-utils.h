@@ -24,7 +24,7 @@ void list_all_users();
 // Imprime os dados de um cliente (não necessáriamente na lista)
 void print_user_data(struct cliente c);
 
-// Cria relatório da lista de clientes cadastrados
+// Cria um relatório da lista de clientes cadastrados
 void report();
 
 // Carrega um relatório de lista de clientes
@@ -37,13 +37,13 @@ int create_user(struct cliente novo_cliente);
 int create_users(struct cliente novos_clientes[], int size);
 
 // Retorna o usuário com o id do argumento; retorna cliente_vazio caso o cliente não seja encontrado
-struct cliente find_user(unsigned int id);
+struct cliente find_user(char trg_id[6]);
 
 // Realiza a transferência entre dois usuários
-int transfer(unsigned int id_orig, unsigned int id_dest, float quant);
+int transfer(char id_orig[6], char id_dest[6], float quant);
 
 // Deleta um usuário com o id do argumento
-int delete_user(unsigned int trg_id);
+int delete_user(char trg_id[6]);
 
 // Processa uma linha de entrada
 int line_input(FILE* stream, int argc, int size, char* delim, char** args);
@@ -55,6 +55,6 @@ int client_input(struct cliente *new_cliente);
 int client_data(char *nome, char *idade, char *saldo, struct cliente *new_cliente);
 
 // Processa linha dos dados de transferência
-int transfer_input(int *id_orig, int *id_dest, float *quant);
+int transfer_input(char *id_orig, char *id_dest, float *quant);
 
 #endif

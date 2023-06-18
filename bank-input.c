@@ -102,39 +102,40 @@ int client_data(char *nome, char *idade, char *saldo, struct cliente *new_client
 	return 1;
 }
 
-int transfer_input(int *id_orig, int *id_dest, float *quant){
+int transfer_input(char *id_orig, char *id_dest, float *quant){
 	char** usr_in;
 	usr_in = malloc(30 * sizeof(char));
 	if(!(line_input(stdin, 3, 30, " ", usr_in))){
+		free(usr_in);
 		return 0;
 	}
 
-	char* endptr;
-
-	int temp = strtol(usr_in[0], &endptr, 10);
-	// Verificação de validade do id (quando o endptr não é '\0', 
-	// há caracteres que não tem valor numérico
-	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: id de origem invalido\n");
+	if(strlen(usr_in[0]) != 6){
+		fprintf(stderr, "ID invalido!\n");
 		return 0;
 	}
-	*id_orig = temp;
+	strcpy(id_orig, usr_in[0]);
+	id_orig = usr_in[0];
 
-	temp = strtol(usr_in[1], &endptr, 10);
-	// Verificação de validade da idade (quando o endptr não é '\0', 
-	// há caracteres que não tem valor numérico
-	if(*endptr != '\0'){
-		fprintf(stderr, "Erro: id de destino invalido\n");
+	if(strlen(usr_in[1]) != 6){
+		fprintf(stderr, "ID invalido!\n");
+		free(usr_in);
 		return 0;
-	}		
-	*id_dest = temp;
+	}
+	strcpy(id_dest, usr_in[1]);
+	id_dest = usr_in[1];
+
+	char *endptr;
 
 	float ftemp = strtof(usr_in[2], &endptr);
 	if(*endptr != '\0'){
 		fprintf(stderr, "Erro: saldo invalido\n");
+		free(usr_in);
 		return 0;
 	}
 	*quant = ftemp;
+
+	free(usr_in);
 	
 	return 1;
 }

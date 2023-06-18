@@ -58,9 +58,12 @@ int main(int argc, char *argv[]){
 		}
 		int n_in;
 
-		int id_orig;
-		int id_dest;
+		char *id_orig = malloc(6);
+		char *id_dest = malloc(6);
 		float quant;
+
+		char *id_in = NULL;
+		size_t buffer_size = 0;
 
 		struct cliente new_cliente;
 
@@ -70,14 +73,11 @@ int main(int argc, char *argv[]){
 				report();
 				return 0;
 			case '1': // Criar cliente
-				
-				
 				if(client_input(&new_cliente)){
 					create_user(new_cliente);
 				}
 				break;
 			case '2': // Criar clientes
-				// Leitura da quantidade de clientes a ser adicionado
 				if(!scanf("%d", &n_in)){
 					errno = 0;
 					fprintf(stderr, "Valor invalido!\n");
@@ -101,25 +101,29 @@ int main(int argc, char *argv[]){
 						goto loopstart;
 					}
 				}
+				
 				create_users(new_clientes, n_in);
 				free(new_clientes);
 				break;
 			case '3': // Busca de cliente
-				if(!scanf("%d", &n_in)){
-					errno = 0;
-					fprintf(stderr, "Valor invalido!\n");
-					setbuf(stdin, NULL);
+				printf("");
+
+				getline(&id_in, &buffer_size, stdin);
+				setbuf(stdin, NULL);
+				id_in[strcspn(id_in, "\n")] = 0;
+				if(strlen(id_in) != 6){
+					fprintf(stderr, "ID invalido!\n");
 					break;
 				}
-				setbuf(stdin, NULL);
+
 				struct cliente c;
-				c = find_user(n_in);
-				if(strcmp(c.nome, "")){
+				c = find_user(id_in);
+				if(strcmp(c.id, "\0") != 0){
 					print_user_data(c);
 				}
 				break;
 			case '4': // Transferência entre clientes
-				if(transfer_input(&id_orig, &id_dest, &quant)){
+				if(transfer_input(id_orig, id_dest, &quant)){
 					if(transfer(id_orig, id_dest, quant)){
 						puts("Transferencia realizada com sucesso.");
 					}
@@ -130,13 +134,14 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '5': // Remover cliente
-				if(!scanf("%d", &n_in)){
-					errno = 0;
-					fprintf(stderr, "Valor invalido!\n");
+				getline(&id_in, &buffer_size, stdin);
+				setbuf(stdin, NULL);
+				id_in[strcspn(id_in, "\n")] = 0;
+				if(strlen(id_in) != 6){
+					fprintf(stderr, "ID invalido!");
 					break;
 				}
-				setbuf(stdin, NULL);
-				delete_user(n_in);
+				delete_user(id_in);
 				break;
 			case '6': // Listagem dos clientes
 				list_all_users();
