@@ -94,7 +94,6 @@ int load_report(char* filename){
         }
 
         if(strcmp(usr_in[0], "$end") == 0){
-            printf("Acabou-se\n");
             strcpy(sha1namespace, usr_in[1]);
 
             char *endptr;
