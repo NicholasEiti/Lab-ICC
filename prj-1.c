@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
 		char *id_dest = malloc(6);
 		float quant;
 
-		char *id_in = NULL;
+		char *usr_in = NULL;
 		size_t buffer_size = 0;
 
 		struct cliente new_cliente;
@@ -78,14 +78,19 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '2': // Criar clientes
-				if(!scanf("%d", &n_in)){
-					errno = 0;
-					fprintf(stderr, "Valor invalido!\n");
-					setbuf(stdin, NULL);
+				getline(&usr_in, &buffer_size, stdin);
+				setbuf(stdin, NULL);
+				usr_in[strcspn(usr_in, "\n")] = 0;
+				
+				char *endptr;
+				int temp = strtol(usr_in, &endptr, 10);
+				// Verificação de validade da idade (quando o endptr não é '\0', 
+				// há caracteres que não tem valor numérico
+				if(*endptr != '\0'){
+					fprintf(stderr, "Erro: valor invalido\n");
 					break;
 				}
-				setbuf(stdin, NULL);
-
+				n_in = temp;
 				// Inicialização do array dos novos clientes a serem adicionados
 				struct cliente *new_clientes;
 				new_clientes = (struct cliente *)malloc(n_in*sizeof(struct cliente));
@@ -106,16 +111,16 @@ int main(int argc, char *argv[]){
 				free(new_clientes);
 				break;
 			case '3': // Busca de cliente
-				getline(&id_in, &buffer_size, stdin);
+				getline(&usr_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
-				id_in[strcspn(id_in, "\n")] = 0;
-				if(strlen(id_in) != 6){
-					fprintf(stderr, "ID invalido!\n");
+				usr_in[strcspn(usr_in, "\n")] = 0;
+				if(strlen(usr_in) != 6){
+					fprintf(stderr, "Erro: ID invalido!\n");
 					break;
 				}
 
 				struct cliente c;
-				c = find_user(id_in);
+				c = find_user(usr_in);
 				if(strcmp(c.id, "\0") != 0){
 					print_user_data(c);
 				}
@@ -132,15 +137,15 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '5': // Remover cliente
-				getline(&id_in, &buffer_size, stdin);
+				getline(&usr_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
-				id_in[strcspn(id_in, "\n")] = 0;
-				if(strlen(id_in) != 6){
-					fprintf(stderr, "ID invalido!");
+				usr_in[strcspn(usr_in, "\n")] = 0;
+				if(strlen(usr_in) != 6){
+					fprintf(stderr, "Erro: ID invalido!\n");
 					break;
 				}
 
-				delete_user(id_in);
+				delete_user(usr_in);
 				break;
 			case '6': // Listagem dos clientes
 				list_all_users();
