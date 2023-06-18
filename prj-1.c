@@ -36,10 +36,13 @@ void print_help(){
 
 int main(int argc, char *argv[]){
 	setlocale(LC_ALL,"pt-BR.UTF-8");
-	print_menu();
 
 	initialize_list();
-
+	if(argc == 2){
+		load_report(argv[1]);
+		return 0;
+	}
+	print_menu();
 	while(1){
 		loopstart:
 		char op, aux;

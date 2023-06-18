@@ -12,6 +12,12 @@ int line_input(int argc, int size, char* delim, char** args){
 	setbuf(stdin, NULL);
 	
 	usr_in[strcspn(usr_in, "\n")] = 0;
+
+	if(strlen(usr_in) > size){
+		fprintf(stderr, "Linha muito grande!");
+		return 0;
+	}
+	
 	errno = 0;
 
 	char* token;

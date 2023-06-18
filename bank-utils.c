@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <math.h>
 #include <errno.h>
 #include <uuid/uuid.h>
 
 unsigned int counter = 0;
 unsigned int id = 0;
+char sha1namespace[UUID_STR_LEN];
 
 struct cliente *lista_clientes;
 
@@ -16,6 +16,22 @@ struct cliente cliente_vazio = { "\0", "", 0, 0 };
 
 void initialize_list(){
     lista_clientes = malloc(0);
+    uuid_t namespace_uuid;
+    uuid_generate_random(namespace_uuid);
+    uuid_unparse(namespace_uuid, sha1namespace);
+}
+
+void load_report(char* filename){
+    FILE* r_report;
+    r_report = fopen(filename, "r+");
+    if(r_report == NULL){
+        fprintf(stderr, "Arquivo inexistente!\n");
+        return;
+    }
+    char *output;
+    size_t buffer_size = 0;
+    getline(&output, &buffer_size, r_report);
+    printf("%s", output);
 }
 
 void print_user_data(struct cliente c){
@@ -34,7 +50,7 @@ void list_all_users(){
 
 void create_uuid(uuid_t uuid, char plain[6]){
     uuid_t uuid_namespace;
-    uuid_parse(SHA1NAMESPACE, uuid_namespace);
+    uuid_parse(sha1namespace, uuid_namespace);
     uuid_generate_sha1(uuid, uuid_namespace, plain, 6);
 }
 
@@ -57,6 +73,7 @@ void report(){
         uuid_unparse(c.id, uuid_text);
         fprintf(report, "%s,%s,%u,%.2f\n", uuid_text, c.nome, c.idade, c.saldo);
     }
+    fprintf(report, "$%u,%u,%s", id, counter, sha1namespace);
     free(lista_clientes);
     fclose(report);
 }

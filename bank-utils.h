@@ -4,7 +4,6 @@
 #define BANK_UTILS_
 
 #define NOME_LEN 100
-#define SHA1NAMESPACE "aa9b68b5-91fd-4a2d-b3e2-9a2fe7dd55fb" // Salt para SHA1
 
 struct cliente{
     uuid_t id;
@@ -17,6 +16,8 @@ extern struct cliente cliente_vazio;
 
 // Inicializa a lista de clientes (esvazia ela)
 void initialize_list();
+
+void load_report(char* filename);
 
 // Imprime todos os clientes no terminal
 void list_all_users();
