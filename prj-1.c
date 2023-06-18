@@ -77,14 +77,14 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '2': // Criar clientes
+				
+				// Leitura da quantidade de cadastros
 				getline(&usr_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
 				usr_in[strcspn(usr_in, "\n")] = 0;
 				
 				char *endptr;
 				int n_in = strtol(usr_in, &endptr, 10);
-				// Verificação de validade da idade (quando o endptr não é '\0', 
-				// há caracteres que não tem valor numérico
 				if(*endptr != '\0'){
 					fputs("Erro: valor invalido!\n", stderr);
 					break;
@@ -110,6 +110,8 @@ int main(int argc, char *argv[]){
 				free(new_clientes);
 				break;
 			case '3': // Busca de cliente
+
+				// Leitura do ID
 				getline(&usr_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
 				usr_in[strcspn(usr_in, "\n")] = 0;
@@ -136,6 +138,8 @@ int main(int argc, char *argv[]){
 				}
 				break;
 			case '5': // Remover cliente
+
+				// Leitura do ID
 				getline(&usr_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
 				usr_in[strcspn(usr_in, "\n")] = 0;

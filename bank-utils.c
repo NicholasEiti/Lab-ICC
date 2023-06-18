@@ -69,13 +69,12 @@ void report(){
 int load_report(char* filename){
     FILE* r_report;
     r_report = fopen(filename, "r+");
-
+    puts("Carregando relatorio...");
+    
     if(r_report == NULL){
         fprintf(stderr, "Arquivo inexistente!\n");
         return 0;
     }
-
-    puts("Carregando relatorio...");
 
     char *output;
     size_t buffer_size = 0;
