@@ -21,19 +21,6 @@ void initialize_list(){
     uuid_unparse(namespace_uuid, sha1namespace);
 }
 
-void load_report(char* filename){
-    FILE* r_report;
-    r_report = fopen(filename, "r+");
-    if(r_report == NULL){
-        fprintf(stderr, "Arquivo inexistente!\n");
-        return;
-    }
-    char *output;
-    size_t buffer_size = 0;
-    getline(&output, &buffer_size, r_report);
-    printf("%s", output);
-}
-
 void print_user_data(struct cliente c){
     char uuid_text[UUID_STR_LEN];
     uuid_unparse(c.id, uuid_text);
@@ -73,9 +60,80 @@ void report(){
         uuid_unparse(c.id, uuid_text);
         fprintf(report, "%s,%s,%u,%.2f\n", uuid_text, c.nome, c.idade, c.saldo);
     }
-    fprintf(report, "$%u,%u,%s", id, counter, sha1namespace);
+    fprintf(report, "$end,%s,%u,%u", sha1namespace, id, counter);
+
     free(lista_clientes);
     fclose(report);
+}
+
+int load_report(char* filename){
+    FILE* r_report;
+    r_report = fopen(filename, "r+");
+
+    if(r_report == NULL){
+        fprintf(stderr, "Arquivo inexistente!\n");
+        return 0;
+    }
+
+    char *output;
+    size_t buffer_size = 0;
+    getline(&output, &buffer_size, r_report);
+
+    if(strcmp(output, "ID,Nome,Idade,Saldo\n")){
+        fprintf(stderr, "Arquivo nao compativel\n");
+        return 0;
+    }
+    
+    
+    while(!feof(r_report)){
+        char** usr_in;
+        usr_in = malloc(NOME_LEN+40);
+        if(!(line_input(r_report, 4, NOME_LEN+40, ",", usr_in))){
+            fprintf(stderr, "Erro: linha em formato incompatível\n");
+            return 0;
+        }
+
+        if(strcmp(usr_in[0], "$end") == 0){
+            printf("Acabou-se\n");
+            strcpy(sha1namespace, usr_in[1]);
+
+            char *endptr;
+            unsigned int temp = strtoul(usr_in[2], &endptr, 10);
+            if(*endptr != '\0'){
+                fprintf(stderr, "Erro: id inicial invalido\n");
+                return 0;
+            }
+            id = temp;
+
+            temp = strtoul(usr_in[3], &endptr, 10);
+            if(*endptr != '\0'){
+                fprintf(stderr, "Erro: counter inicial invalido\n");
+                return 0;
+            }
+            counter = temp;
+            
+            return 1;
+        }
+
+        struct cliente new_cliente;
+
+        uuid_t new_uuid;
+        uuid_parse(usr_in[0], new_uuid);
+
+        if(client_data(usr_in[1], usr_in[2], usr_in[3], &new_cliente)){
+            uuid_copy(new_cliente.id, new_uuid);
+            lista_clientes = (struct cliente*)realloc(lista_clientes, (++counter)*sizeof(struct cliente));
+            lista_clientes[counter-1] = new_cliente;
+
+            puts("Cliente inserido com sucesso");
+        }
+        else{
+            fprintf(stderr, "Erro na leitura da linha\n");
+            return 0;
+        }
+    }
+    fprintf(stderr, "Final do arquivo invalido\n");
+    return 0;
 }
 
 int create_user(struct cliente novo_cliente){

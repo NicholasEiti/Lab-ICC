@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <uuid/uuid.h>
 
 #ifndef BANK_UTILS_
@@ -17,8 +18,6 @@ extern struct cliente cliente_vazio;
 // Inicializa a lista de clientes (esvazia ela)
 void initialize_list();
 
-void load_report(char* filename);
-
 // Imprime todos os clientes no terminal
 void list_all_users();
 
@@ -27,6 +26,8 @@ void print_user_data(struct cliente c);
 
 // Cria relatório da lista de clientes cadastrados
 void report();
+
+int load_report(char* filename);
 
 // Adiciona um cliente na lista de clientes
 int create_user(struct cliente novo_cliente);
@@ -43,8 +44,12 @@ int transfer(unsigned int id_orig, unsigned int id_dest, float quant);
 // Deleta um usuário com o id do argumento
 int delete_user(unsigned int trg_id);
 
+int line_input(FILE* stream, int argc, int size, char* delim, char** args);
+
 // Processa linha dos dados de criaçao de cliente
 int client_input(struct cliente *new_cliente);
+
+int client_data(char *nome, char *idade, char *saldo, struct cliente *new_cliente);
 
 // Processa linha dos dados de transferência
 int transfer_input(int *id_orig, int *id_dest, float *quant);
