@@ -111,14 +111,14 @@ int transfer_input(char *id_orig, char *id_dest, float *quant){
 	}
 
 	if(strlen(usr_in[0]) != 6){
-		fprintf(stderr, "ID invalido!\n");
+		fprintf(stderr, "Erro: ID de origem invalido!\n");
 		return 0;
 	}
 	strcpy(id_orig, usr_in[0]);
 	id_orig = usr_in[0];
 
 	if(strlen(usr_in[1]) != 6){
-		fprintf(stderr, "ID invalido!\n");
+		fprintf(stderr, "Erro: ID de destino invalido!\n");
 		free(usr_in);
 		return 0;
 	}

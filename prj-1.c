@@ -106,8 +106,6 @@ int main(int argc, char *argv[]){
 				free(new_clientes);
 				break;
 			case '3': // Busca de cliente
-				printf("");
-
 				getline(&id_in, &buffer_size, stdin);
 				setbuf(stdin, NULL);
 				id_in[strcspn(id_in, "\n")] = 0;
@@ -141,6 +139,7 @@ int main(int argc, char *argv[]){
 					fprintf(stderr, "ID invalido!");
 					break;
 				}
+
 				delete_user(id_in);
 				break;
 			case '6': // Listagem dos clientes
