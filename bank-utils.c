@@ -89,7 +89,7 @@ int load_report(char* filename){
     
     while(!feof(r_report)){
         char** usr_in;
-        usr_in = malloc(NOME_LEN+40);
+        usr_in = (char **)malloc(NOME_LEN+40);
         if(!(line_input(r_report, 4, NOME_LEN+40, ",", usr_in))){
             fputs("Erro: linha em formato incompatível\n", stderr);
             fclose(r_report);

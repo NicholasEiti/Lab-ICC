@@ -46,7 +46,7 @@ int line_input(FILE* stream, int argc, int size, char* delim, char** args){
 
 int client_input(struct cliente *new_cliente){
 	char** usr_in;
-	usr_in = malloc(NOME_LEN+20);
+	usr_in = (char **)malloc(NOME_LEN+20);
 	if(!(line_input(stdin, 3, NOME_LEN+20, ",", usr_in))){
 		free(usr_in);
 		return 0;
@@ -109,7 +109,7 @@ int client_data(char *nome, char *idade, char *saldo, struct cliente *new_client
 
 int transfer_input(char *id_orig, char *id_dest, float *quant){
 	char** usr_in;
-	usr_in = malloc(30 * sizeof(char));
+	usr_in = (char **)malloc(30 * sizeof(char));
 	if(!(line_input(stdin, 3, 30, " ", usr_in))){
 		free(usr_in);
 		return 0;

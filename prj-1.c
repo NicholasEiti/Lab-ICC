@@ -57,8 +57,8 @@ int main(int argc, char *argv[]){
 			op = '\0';
 		}
 
-		char *id_orig = malloc(6);
-		char *id_dest = malloc(6);
+		char *id_orig = (char *)malloc(6);
+		char *id_dest = (char *)malloc(6);
 		float quant;
 
 		char *usr_in = NULL;
