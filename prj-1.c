@@ -70,6 +70,8 @@ int main(int argc, char *argv[]){
 			case '0': // Criar relatório
 				puts("Saindo do sistema e criando relatorio");
 				report();
+				free(id_orig);
+				free(id_dest);
 				return 0;
 			case '1': // Criar cliente
 				if(client_input(&new_cliente)){

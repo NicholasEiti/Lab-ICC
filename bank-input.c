@@ -48,11 +48,13 @@ int client_input(struct cliente *new_cliente){
 	char** usr_in;
 	usr_in = malloc(NOME_LEN+20);
 	if(!(line_input(stdin, 3, NOME_LEN+20, ",", usr_in))){
+		free(usr_in);
 		return 0;
 	}
 
 	if(strlen(usr_in[0]) > NOME_LEN){
 		fputs("Erro: nome deve ter no maximo 100 caracteres\n", stderr);
+		free(usr_in);
 		return 0;
 	}
 	strcpy(new_cliente->nome, usr_in[0]);
@@ -63,6 +65,7 @@ int client_input(struct cliente *new_cliente){
 	// há caracteres que não tem valor numérico
 	if(temp < 0 || *endptr != '\0'){
 		fputs("Erro: idade invalida\n", stderr);
+		free(usr_in);
 		return 0;
 	}
 	new_cliente->idade = (unsigned int)temp;
@@ -71,8 +74,10 @@ int client_input(struct cliente *new_cliente){
 	if(new_cliente->saldo < 0 || *endptr != '\0'){
 		new_cliente->saldo = 0;
 		fputs("Erro: saldo invalido\n", stderr);
+		free(usr_in);
 		return 0;
 	}
+	free(usr_in);
 	return 1;
 }
 
@@ -112,6 +117,7 @@ int transfer_input(char *id_orig, char *id_dest, float *quant){
 
 	if(strlen(usr_in[0]) != 6){
 		fputs("Erro: ID de origem invalido!\n", stderr);
+		free(usr_in);
 		return 0;
 	}
 	strcpy(id_orig, usr_in[0]);
@@ -136,6 +142,5 @@ int transfer_input(char *id_orig, char *id_dest, float *quant){
 	*quant = ftemp;
 
 	free(usr_in);
-	
 	return 1;
 }

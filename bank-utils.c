@@ -15,7 +15,7 @@ struct cliente *lista_clientes;
 struct cliente cliente_vazio = { "\0", "", 0, 0 };
 
 void initialize_list(){
-    lista_clientes = malloc(0);
+    free(lista_clientes);
     uuid_t namespace_uuid;
     uuid_generate(namespace_uuid);
     uuid_unparse(namespace_uuid, sha1namespace);
@@ -50,7 +50,7 @@ void report(){
     struct tm *tm_struct = localtime(&curtime);
     sprintf(filename, "%d-%.2d-%.2d %.2d-%.2d-%.2d report.csv", tm_struct->tm_year + 1900, tm_struct->tm_mon+1, tm_struct->tm_mday, 
     tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec);
-    report = fopen(filename, "w+");
+    report = fopen(filename, "w");
 
     // Cabeçalho do arquivo
     fputs("ID,Nome,Idade,Saldo\n", report); 
@@ -68,7 +68,7 @@ void report(){
 
 int load_report(char* filename){
     FILE* r_report;
-    r_report = fopen(filename, "r+");
+    r_report = fopen(filename, "r");
     puts("Carregando relatorio...");
     
     if(r_report == NULL){
@@ -82,6 +82,7 @@ int load_report(char* filename){
 
     if(strcmp(output, "ID,Nome,Idade,Saldo\n")){
         fputs("Arquivo nao compativel\n", stderr);
+        fclose(r_report);
         return 0;
     }
     
@@ -91,6 +92,7 @@ int load_report(char* filename){
         usr_in = malloc(NOME_LEN+40);
         if(!(line_input(r_report, 4, NOME_LEN+40, ",", usr_in))){
             fputs("Erro: linha em formato incompatível\n", stderr);
+            fclose(r_report);
             return 0;
         }
 
@@ -101,6 +103,7 @@ int load_report(char* filename){
             unsigned int temp = strtoul(usr_in[2], &endptr, 10);
             if(*endptr != '\0'){
                 fputs("Erro: id inicial invalido\n", stderr);
+                fclose(r_report);
                 return 0;
             }
             id = temp;
@@ -108,10 +111,12 @@ int load_report(char* filename){
             temp = strtoul(usr_in[3], &endptr, 10);
             if(*endptr != '\0'){
                 fputs("Erro: counter inicial invalido\n", stderr);
+                fclose(r_report);
                 return 0;
             }
             counter = temp;
             puts("Relatorio carregado com sucesso.\n");
+            fclose(r_report);
             return 1;
         }
 
@@ -127,10 +132,12 @@ int load_report(char* filename){
         }
         else{
             fputs("Erro na leitura da linha\n", stderr);
+            fclose(r_report);
             return 0;
         }
     }
     fputs("Final do arquivo invalido\n", stderr);
+    fclose(r_report);
     return 0;
 }
 
